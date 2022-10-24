@@ -27,3 +27,8 @@ def root():
 @app.get("/yellow")
 def root():
     return {"message": "Yello World"}
+
+
+@app.get("/test")
+def sendMessage():
+    return {"message": "CA Austin ditched duty"}
