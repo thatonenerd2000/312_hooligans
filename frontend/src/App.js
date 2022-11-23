@@ -1,16 +1,22 @@
-//Views
-import Hello from './views/hello_world.jsx';
+//Router
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+//Views
+import Landing from "./views/Landing.jsx";
 
 //Styles
-import './style.scss';
+import "./style.scss";
 
 const App = () => {
   return (
     <>
-      <Hello />
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<Landing />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
-}
+};
 
 export default App;
