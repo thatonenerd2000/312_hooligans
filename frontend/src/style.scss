@@ -74,14 +74,16 @@ html, h1, h2, h3, h4, h5, h6 {
     background-color: rgb(136, 183, 25);
     color: white;
     font-weight: bold;
+    &:hover{
+        cursor: pointer;
+    }
 }
-
 
 // Views
 .Landing {
     height: 100vh;
     width: 100vw;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('./assets/Sprinkle.svg');
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('./assets/images/Sprinkle.svg');
     background-size: cover;
     text-align: center;
     color: white;

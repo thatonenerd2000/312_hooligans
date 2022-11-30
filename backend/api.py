@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import bcrypt
+from dbmethods import dbmethods
+
 
 origins = [
     # NEED TO MODIFY THIS **SECURITY ISSUE**
@@ -19,16 +22,36 @@ app.add_middleware(
 )
 
 
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
+@app.post("/createUser")
+def createUser(userInformation: dict):
+    name = userInformation["name"]
+    email = userInformation["email"]
+    plainTextPassword = userInformation["password"]
+
+    # Hash the password
+    salt = bcrypt.gensalt()
+    utf = plainTextPassword.encode('utf-8')
+    hashedPassword = bcrypt.hashpw(utf, salt)
+
+    db = dbmethods()
+    db.create_user(name, email, hashedPassword.decode())
+    db.closeConnection()
+    return {"message": "User created successfully"}
 
 
-@app.get("/yellow")
-def root():
-    return {"message": "Yello World"}
+@app.post("/verifyUser")
+def verifyUser(userInformation: dict):
+    email = userInformation['email']
+    plainTextPassword = userInformation['password']
 
+    db = dbmethods()
+    user = db.verifyLogin(email)
+    hashedPassword = user[0][3]
+    db.closeConnection()
 
-@app.get("/test")
-def sendMessage():
-    return {"message": "CA Austin ditched duty"}
+    check = bcrypt.checkpw(plainTextPassword.encode(
+        'utf-8'), hashedPassword.encode('utf-8'))
+    if check:
+        return {"message": "User verified successfully", "name": user[0][1], "email": user[0][2]}
+    else:
+        return {"message": "User verification failed"}
