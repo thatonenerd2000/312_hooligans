@@ -20,7 +20,7 @@ const Signup = (props) => {
       })
       .then((res) => {
         if (res.data.message === "User created successfully") {
-          Globalconfig.setUsername(name);
+          Globalconfig.setUsername(email.split("@")[0]);
           Globalconfig.setUserEmail(email);
           navigate("/listings");
         }

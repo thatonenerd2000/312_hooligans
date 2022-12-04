@@ -12,15 +12,17 @@ const Login = (props) => {
   let navigate = useNavigate();
 
   const verifyUser = (email, password) => {
+    let username = email.split("@")[0];
     axios
       .post(`${Globalconfig.host}/verifyUser`, {
-        email: email,
+        email: username,
         password: password,
       })
       .then((res) => {
         if (res.data.message === "User verified successfully") {
-          Globalconfig.setUsername(res.data.name);
+          Globalconfig.setUsername(res.data.username);
           Globalconfig.setUserEmail(res.data.email);
+          Globalconfig.setName(res.data.name);
           navigate("/listings");
         } else {
           alert("Incorrect email or password");
@@ -41,7 +43,7 @@ const Login = (props) => {
       <h2>Log In</h2>
       <input
         type="text"
-        placeholder="email"
+        placeholder="email or username"
         onChange={(e) => {
           setEmail(e.target.value);
         }}
