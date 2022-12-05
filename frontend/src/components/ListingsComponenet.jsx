@@ -30,17 +30,7 @@ const ListingsComponenet = (props) => {
         <strong>Location:</strong> {props.listing[7]}
       </p>
       <br />
-      {Globalconfig.name !== "" ? (
-        <button>Buy</button>
-      ) : (
-        <button
-          onClick={(e) => {
-            navigate("/");
-          }}
-        >
-          Sign in to buy
-        </button>
-      )}
+      {props.children}
     </div>
   );
 };
