@@ -107,7 +107,6 @@ const NewItem = () => {
         <button
           onClick={() => {
             // Make sure all fields are filled out //
-
             add_listing(
               Globalconfig.username,
               Globalconfig.name,
