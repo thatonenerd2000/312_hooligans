@@ -10,7 +10,6 @@ class dbmethods:
         # Comment the line below if using docker eg prod environment
         self.connection = psycopg2.connect(
             database="cse312_project", user="root", password="password", host="postgres", port="5432")
-
         self.cur = self.connection.cursor()
 
     def create_user(self, name, email, username, hashedPass):

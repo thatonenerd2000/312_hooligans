@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+import helpers
 import bcrypt
 from dbmethods import dbmethods
 import helpers
@@ -29,7 +29,6 @@ def createUser(userInformation: dict):
     email = userInformation["email"]
     plainTextPassword = userInformation["password"]
     username = email[:email.index("@")]
-
     # Hash the password
     salt = bcrypt.gensalt()
     utf = plainTextPassword.encode('utf-8')
@@ -45,12 +44,10 @@ def createUser(userInformation: dict):
 def verifyUser(userInformation: dict):
     email = userInformation['email']
     plainTextPassword = userInformation['password']
-
     db = dbmethods()
     user = db.verifyLogin(email)
     hashedPassword = user[0][4]
     db.closeConnection()
-
     check = bcrypt.checkpw(plainTextPassword.encode(
         'utf-8'), hashedPassword.encode('utf-8'))
     if check:
@@ -72,6 +69,16 @@ def getAllListings():
     db = dbmethods()
     listings = db.get_all_listings()
     db.closeConnection()
+    sortedListings = {}
+    for i in listings:
+        print(i[4])
+        if i[4] in sortedListings:
+            temp = sortedListings[i[4]]
+            temp += [i]
+            sortedListings[i[4]] = temp
+        else:
+            sortedListings[i[4]] = [i]
+    print(sortedListings)
     return listings
 
 
@@ -85,7 +92,6 @@ def addListing(listingInformation: dict):
     price = listingInformation["price"]
     location = listingInformation["location"]
     image = listingInformation["image"]
-
     db = dbmethods()
     db.add_listing(name, username, item_name, item_type,
                    description, price, location, image, False)
