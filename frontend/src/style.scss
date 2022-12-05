@@ -158,6 +158,140 @@ html, h1, h2, h3, h4, h5, h6 {
     display: inline;
 }
 
+//Adding Listing
+
+.add_listing {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(165, 191, 214);
+}
+
+.add_listing_box{
+    height:40vh;;
+    width: 40vw;
+    background-color: white;
+    padding: 20px;
+    margin: 10px auto;
+}
+
+#add_listing_image{
+    height: 200px;
+    padding:5px;
+    border: 2px solid black;
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+.add_listing_box input{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    width: 200px;
+}
+
+.add_listing_box select{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    width: 200px;
+}
+
+
+.add_listing_box button{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    width: 100px;
+    background-color: #f9a825;
+    color: white;
+    font-weight: bold;
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+//Listings Component
+.listing {
+  height: 100%;
+  width: 25vw;
+  background-color: #efefef;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 2%;
+  display: inline-block;
+  text-align: center;
+}
+
+#listing_image {
+  height: 200px;
+  padding: 5px;
+  border: 2px solid black;
+}
+
+h2 {
+  margin-top: 10px;
+  color: #f9a825;
+}
+
+p {
+  font-size: 0.8em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+p strong {
+  font-weight: bold;
+}
+
+hr {
+  border-top: 1px solid #f9a825;
+  width: 80%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+//Listings Page
+.listings_page{
+    width: 100vw;
+    min-height: 100vh;
+    max-height: fit-content;
+    background-color: #efefef;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+}
+
+h1{
+    color: #f9a825;
+    font-size: 1.2em;
+    margin-top: 20px;
+    text-align: center;
+}
+
+button{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    width: 200px;
+    background-color: #f9a825;
+    color: white;
+    font-weight: bold;
+    &:hover{
+        cursor: pointer;
+    }
+}
+
 // Animations
 @keyframes fadeIn {
     0% {

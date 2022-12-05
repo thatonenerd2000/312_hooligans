@@ -91,15 +91,15 @@ const NewItem = () => {
         <input
           type="text"
           placeholder="Price"
-          id="itemLocation"
+          id="add_listing_price"
           onChange={(e) => {
             setItemPrice(e.target.value);
           }}
         />
         <input
           type="text"
-          placeholder="Price"
-          id="add_listing_price"
+          placeholder="Location"
+          id="itemLocation"
           onChange={(e) => {
             setItemLocation(e.target.value);
           }}
