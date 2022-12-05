@@ -6,6 +6,21 @@ html, h1, h2, h3, h4, h5, h6 {
 }
 
 // Components
+.listing{
+    height: 100%;
+    width: 25vw;
+    background-color: #efefef;
+    padding: 10px;
+    margin: 10px;
+    border-radius:2%;
+    display: inline-block;
+}
+
+#listing_image{
+    height: 200px;
+    padding:5px;
+    border: 2px solid black;
+}
 
 //Logo
 .Logo{
@@ -43,6 +58,10 @@ html, h1, h2, h3, h4, h5, h6 {
     background-color: #f9a825;
     color: white;
     font-weight: bold;
+    width: stretch;
+    &:hover{
+        cursor: pointer;
+    }
 }
 
 //Signup
@@ -74,14 +93,19 @@ html, h1, h2, h3, h4, h5, h6 {
     background-color: rgb(136, 183, 25);
     color: white;
     font-weight: bold;
+    width: stretch;
+    &:hover{
+        cursor: pointer;
+    }
 }
 
-
 // Views
+
+//Landing
 .Landing {
     height: 100vh;
     width: 100vw;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('./assets/Sprinkle.svg');
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('./assets/images/Sprinkle.svg');
     background-size: cover;
     text-align: center;
     color: white;
@@ -109,6 +133,35 @@ html, h1, h2, h3, h4, h5, h6 {
     width: stretch;
 }
 
+//Add listing
+.add_listing{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(165, 191, 214);
+}
+
+.add_listing_box{
+    height:40vh;;
+    width: 40vw;
+    background-color: white;
+    padding: 20px;
+}
+
+#add_listing_image{
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+//Listings
+
+.listings_page{
+    width: 100vw;
+    min-height: 100vh;
+    max-height: fit-content;
+    background-color: white;
+    display: inline;
+}
 
 // Animations
 @keyframes fadeIn {
