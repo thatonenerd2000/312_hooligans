@@ -29,7 +29,11 @@ const Listing = () => {
 
   return (
     <div className="listings_page">
-      <h1>Hello there {Globalconfig.name}, welcome to the listings page</h1>
+      {Globalconfig.name !== "" ? (
+        <h1>Hello there {Globalconfig.name}, welcome to the listings page</h1>
+      ) : (
+        <h1>Welcome to the listings page</h1>
+      )}
       {listings.map((listing) => {
         return <ListingsComponenet listing={listing} />;
       })}

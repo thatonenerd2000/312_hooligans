@@ -1,7 +1,16 @@
-//Context
-// import { ConfigContext } from "../GlobalContext";
+import React, { useContext } from "react";
+
+// Context
+import { ConfigContext } from "../GlobalContext";
+
+//Router
+import { useNavigate } from "react-router-dom";
 
 const ListingsComponenet = (props) => {
+  const Globalconfig = useContext(ConfigContext);
+
+  let navigate = useNavigate();
+
   return (
     <div className="listing">
       <div style={{ textAlign: "center" }}>
@@ -20,6 +29,18 @@ const ListingsComponenet = (props) => {
       <p>
         <strong>Location:</strong> {props.listing[7]}
       </p>
+      <br />
+      {Globalconfig.name !== "" ? (
+        <button>Buy</button>
+      ) : (
+        <button
+          onClick={(e) => {
+            navigate("/");
+          }}
+        >
+          Sign in to buy
+        </button>
+      )}
     </div>
   );
 };
