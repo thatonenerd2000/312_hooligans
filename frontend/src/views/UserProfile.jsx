@@ -14,7 +14,7 @@ const UserProfile = () => {
   const Globalconfig = useContext(ConfigContext);
   const navigate = useNavigate();
 
-  const [listings, getListings] = React.useState("");
+  const [listings, getListings] = React.useState([""]);
 
   const getListingsAxios = () => {
     axios.get(`${Globalconfig.host}/getListings/${Globalconfig.username}`).then((res) => {
@@ -29,7 +29,15 @@ const UserProfile = () => {
   return (
     <div>
       {Globalconfig.name !== "" ? (
-        <h1>Hello there {Globalconfig.name}, welcome to your profile</h1>
+        <div>
+          <h1>Hello there {Globalconfig.name}, welcome to your profile</h1>
+          <hr></hr>
+          <h2>Your listings</h2>
+          <hr />
+          {listings.map((listing) => {
+            return <ListingsComponenet listing={listing} />;
+          })}
+        </div>
       ) : (
         <div>
           <h1>Please sign in to view your profile</h1>
