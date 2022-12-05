@@ -15,6 +15,11 @@ const Login = (props) => {
     let username = email.split("@")[0];
     axios
       .post(`${Globalconfig.host}/verifyUser`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+        },
         email: username,
         password: password,
       })
