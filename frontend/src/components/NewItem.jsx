@@ -16,6 +16,11 @@ const NewItem = () => {
 
   const add_listing = (username, name, itemName, description, itemType, price, location, image) => {
     axios.post(`${Globalconfig.host}/addListing`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      },
       username: username,
       name: name,
       itemName: itemName,

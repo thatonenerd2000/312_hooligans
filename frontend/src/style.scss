@@ -58,6 +58,10 @@ html, h1, h2, h3, h4, h5, h6 {
     background-color: #f9a825;
     color: white;
     font-weight: bold;
+    width: stretch;
+    &:hover{
+        cursor: pointer;
+    }
 }
 
 //Signup
@@ -89,6 +93,7 @@ html, h1, h2, h3, h4, h5, h6 {
     background-color: rgb(136, 183, 25);
     color: white;
     font-weight: bold;
+    width: stretch;
     &:hover{
         cursor: pointer;
     }
