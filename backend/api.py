@@ -78,7 +78,6 @@ def getAllListings():
             sortedListings[i[4]] = temp
         else:
             sortedListings[i[4]] = [i]
-    print(sortedListings)
     return listings
 
 
