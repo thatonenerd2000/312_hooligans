@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useState, useContext } from "react";
-
 //Router
 import { useNavigate } from "react-router-dom";
 
@@ -88,10 +87,23 @@ const Signup = (props) => {
       <br />
       <button
         onClick={() => {
-          if (password === confirmPassword) {
+          if (firstName !== "" && lastName !== "" && email.includes("@") && password === confirmPassword) {
             createUser(firstName + " " + lastName, email, password);
           }
-        }}
+          else if(firstName === ""){
+              window.alert("Please fill out first name")
+          }
+          else if(lastName === ""){
+              window.alert("Please fill out last name")
+          }
+          else if(!email.includes("@")){
+              window.alert("Please fill out a valid email")
+          }
+          else {
+              window.alert("One or more fields wrong")
+          }
+        }
+      }
       >
         Create Account
       </button>
