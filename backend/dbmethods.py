@@ -99,7 +99,11 @@ class dbmethods:
         self.cur.execute("""UPDATE listings SET soldStatus = 'True' WHERE id = %s""", (item))
         self.cur.execute("""UPDATE cart SET bought = 'True' WHERE username = %s""", (username))
         self.connection.commit()
-
+        
+    def get_item_from_id(self, item):
+        self.cur.exceute("""SELECT * FROM listings WHERE id = %s""", (item))
+        the_item = self.cur.fetchone()
+        return the_item
     # Call this method every time you call any db methods
     def closeConnection(self):
         self.connection.close()

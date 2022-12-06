@@ -134,3 +134,10 @@ def removeOne(checkoutInformation):
     db = dbmethods()
     db.remove_item_from_cart(username, itemId)
     db.closeConnection()
+
+@app.post("/getListing")
+def getListing(idInformation):
+    itemId = idInformation['itemId']
+    db = dbmethods()
+    db.get_item_from_id(itemId)
+    db.closeConnection()
