@@ -98,19 +98,14 @@ def addListing(listingInformation: dict):
 
 @app.post("/addToCart")
 def addToCart(cartInformation: dict):
-    buyer = cartInformation["buyer"]
-    seller = cartInformation["seller"]
-    item_name = cartInformation["item_name"]
-    item_type = cartInformation["item_type"]
-    description = cartInformation["description"]
-    price = cartInformation["price"]
-    location = cartInformation["location"]
+    buyer = cartInformation["buyerUsername"]
+    itemId = cartInformation["itemId"]
     db = dbmethods()
-    db.add_to_cart(buyer, seller, item_name, item_type, description, price, location)
+    db.add_to_cart(buyer, itemId)
     db.closeConnection()
-    return {"message": buyer + " has " + item_name + " from: " + seller + "!"}
+    return {"message": buyer + " bought a thing!"}
 
-@app.post("/getCart/{username}")
+@app.get("/getCart/{username}")
 def getUserCart(username: str):
     db = dbmethods()
     cart = db.get_user_cart(username)

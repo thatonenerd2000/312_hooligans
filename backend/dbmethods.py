@@ -49,12 +49,10 @@ class dbmethods:
         listings = self.cur.fetchall()
         return listings
 
-    def add_to_cart(self, buyer, seller, item_name, item_type, description, price, location):
+    def add_to_cart(self, buyer, itemId):
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS cart (id SERIAL PRIMARY KEY, username VARCHAR(255), item VARCHAR(255), bought VARCHAR(255))''')
-        self.cur.execute("""SELECT * FROM listings WHERE username = %s AND item_name = %s AND item_type = %s AND description = %s AND price = %s AND location = %s AND soldStatus != 'True'""", (seller, item_name, item_type, description, price, location))
-        item = self.cur.fetchone()
-        self.cur.execute("INSERT INTO cart (username, item, bought) VALUES (%s, %s, %s)", (buyer, item[0], False))
+        self.cur.execute("INSERT INTO cart (username, item, bought) VALUES (%s, %s, %s)", (buyer, itemId, False))
         self.connection.commit()
     
     def get_user_cart(self, username):
@@ -89,6 +87,7 @@ class dbmethods:
     def checkout_single_item(self, username, item):
         self.cur.execute("""UPDATE listings SET soldStatus = 'True' WHERE id = %s""", (item))
         self.cur.execute("""UPDATE cart SET bought = 'True' WHERE username = %s""", (username))
+        self.cur.execute("""DELETE FROM cart WHERE item  %s AND username != %s""", (item, username))
         self.connection.commit()
 
     # Call this method every time you call any db methods
