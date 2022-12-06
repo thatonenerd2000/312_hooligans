@@ -97,7 +97,11 @@ class dbmethods:
             '''CREATE TABLE IF NOT EXISTS cart (id SERIAL PRIMARY KEY, username VARCHAR(255), item VARCHAR(255), bought VARCHAR(255))''')
         self.cur.execute("""DELETE FROM cart WHERE item = %s AND username != %s""", (item, username) )
         self.connection.commit()
-
+        
+    def get_item_from_id(self, item):
+        self.cur.exceute("""SELECT * FROM listings WHERE id = %s""", (item))
+        the_item = self.cur.fetchone()
+        return the_item
     # Call this method every time you call any db methods
     def closeConnection(self):
         self.connection.close()
