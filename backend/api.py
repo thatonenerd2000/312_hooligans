@@ -95,3 +95,30 @@ def addListing(listingInformation: dict):
                    description, price, location, image, False)
     db.closeConnection()
     return {"message": "Listing added successfully"}
+
+@app.post("/addToCart")
+def addToCart(cartInformation: dict):
+    buyer = cartInformation["buyer"]
+    seller = cartInformation["seller"]
+    item_name = cartInformation["item_name"]
+    item_type = cartInformation["item_type"]
+    description = cartInformation["description"]
+    price = cartInformation["price"]
+    location = cartInformation["location"]
+    db = dbmethods()
+    db.add_to_cart(buyer, seller, item_name, item_type, description, price, location)
+    db.closeConnection()
+    return {"message": buyer + " has " + item_name + " from: " + seller + "!"}
+
+@app.post("/getCart/{username}")
+def getUserCart(username: str):
+    db = dbmethods()
+    cart = db.get_user_cart(username)
+    db.closeConnection()
+    return cart
+
+@app.post("/checkoutCart/{username}")
+def checkoutCart(username: str):
+    db = dbmethods()
+    cart = db.checkout_entire_cart(username)
+    db.closeConnection()
