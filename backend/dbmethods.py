@@ -49,6 +49,62 @@ class dbmethods:
         listings = self.cur.fetchall()
         return listings
 
+    def add_to_cart(self, buyer, seller, item_name, item_type, description, price, location):
+        self.cur.execute(
+            '''CREATE TABLE IF NOT EXISTS cart (id SERIAL PRIMARY KEY, username VARCHAR(255), item VARCHAR(255), bought VARCHAR(255))''')
+        print("table made!")
+        self.cur.execute("""SELECT * FROM listings WHERE username = %s AND item_name = %s AND item_type = %s AND description = %s AND price = %s AND location = %s AND soldStatus != 'True'""", (seller, item_name, item_type, description, price, location))
+        print("found!")
+        item = self.cur.fetchone()
+        print("I found:")
+        print(item[0])
+        self.cur.execute("INSERT INTO cart (username, item, bought) VALUES (%s, %s, %s)", (buyer, item[0], False))
+        print("I inserted")
+        self.connection.commit()
+        print("I Finished!")
+    
+    def get_user_cart(self, username):
+        self.cur.execute(
+            '''CREATE TABLE IF NOT EXISTS cart (id SERIAL PRIMARY KEY, username VARCHAR(255), item VARCHAR(255), bought VARCHAR(255))''')
+        self.cur.execute(
+            '''SELECT * FROM cart WHERE username = %s''', (username,)
+        )
+        my_cart = self.cur.fetchall()
+        return my_cart
+
+    def checkout_entire_cart(self, username):
+        self.cur.execute(
+            '''CREATE TABLE IF NOT EXISTS cart (id SERIAL PRIMARY KEY, username VARCHAR(255), item VARCHAR(255), bought VARCHAR(255))''')
+        self.cur.execute(
+            """SELECT * FROM cart WHERE username = %s AND bought != 'True'""", (username,)
+        )
+        my_cart = self.cur.fetchall()
+        #there's probably a better sql-er version of this
+        for i in my_cart:
+            print("id: ")
+            print(i[0])
+            print("name: ")
+            print(i[1])
+            print("item: ")
+            print(i[2])
+            print("status: ")
+            print(i[3])
+            self.cur.execute(
+                """UPDATE listings SET soldStatus = 'True' WHERE id = %s""", (i[2],)
+            )
+            self.cur.execute(
+                """UPDATE cart SET bought = 'True' WHERE username = %s""", (i[1],)
+            )
+            self.cur.execute(
+                """DELETE FROM cart WHERE item = %s AND username != %s""", (i[2], i[1])
+            )
+        self.connection.commit()
+
+    def checkout_single_item(self, username, item):
+        self.cur.execute("""UPDATE listings SET soldStatus = 'True' WHERE id = %s""", (item))
+        self.cur.execute("""UPDATE cart SET bought = 'True' WHERE username = %s""", (username))
+        self.connection.commit()
+
     # Call this method every time you call any db methods
     def closeConnection(self):
         self.connection.close()
