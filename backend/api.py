@@ -98,17 +98,13 @@ def addListing(listingInformation: dict):
 
 @app.post("/addToCart")
 def addToCart(cartInformation: dict):
-    buyer = cartInformation["buyer"]
-    seller = cartInformation["seller"]
-    item_name = cartInformation["item_name"]
-    item_type = cartInformation["item_type"]
-    description = cartInformation["description"]
-    price = cartInformation["price"]
-    location = cartInformation["location"]
+    buyer = cartInformation["buyerUsername"]
+    itemId = cartInformation["itemId"]
     db = dbmethods()
-    db.add_to_cart(buyer, seller, item_name, item_type, description, price, location)
+    db.add_to_cart(buyer, itemId)
     db.closeConnection()
-    return {"message": buyer + " has " + item_name + " from: " + seller + "!"}
+    return {"message": buyer + " bought a thing!"}
+
 
 @app.post("/getCart/{username}")
 def getUserCart(username: str):
@@ -121,4 +117,20 @@ def getUserCart(username: str):
 def checkoutCart(username: str):
     db = dbmethods()
     cart = db.checkout_entire_cart(username)
+    db.closeConnection()
+
+@app.post("/buyOne/{username}")
+def buyOne(checkoutInformation):
+    username = checkoutInformation['buyerUsername']
+    itemId = checkoutInformation['itemId']
+    db = dbmethods()
+    db.checkout_single_item(username, itemId)
+    db.closeConnection()
+
+@app.post("/removeOne/{username}")
+def removeOne(checkoutInformation):
+    username = checkoutInformation['buyerUsername']
+    itemId = checkoutInformation['itemId']
+    db = dbmethods()
+    db.remove_item_from_cart(username, itemId)
     db.closeConnection()
