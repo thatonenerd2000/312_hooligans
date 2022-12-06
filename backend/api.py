@@ -71,7 +71,6 @@ def getAllListings():
     db.closeConnection()
     sortedListings = {}
     for i in listings:
-        print(i[4])
         if i[4] in sortedListings:
             temp = sortedListings[i[4]]
             temp += [i]
