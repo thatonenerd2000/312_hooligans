@@ -117,3 +117,19 @@ def checkoutCart(username: str):
     db = dbmethods()
     cart = db.checkout_entire_cart(username)
     db.closeConnection()
+
+@app.post("/buyOne/{username}")
+def buyOne(checkoutInformation):
+    username = checkoutInformation['buyerUsername']
+    itemId = checkoutInformation['itemId']
+    db = dbmethods()
+    db.checkout_single_item(username, itemId)
+    db.closeConnection()
+
+@app.post("/removeOne/{username}")
+def removeOne(checkoutInformation):
+    username = checkoutInformation['buyerUsername']
+    itemId = checkoutInformation['itemId']
+    db = dbmethods()
+    db.remove_item_from_cart(username, itemId)
+    db.closeConnection()
