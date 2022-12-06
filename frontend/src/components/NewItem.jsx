@@ -111,24 +111,33 @@ const NewItem = () => {
         />
         <button
           onClick={() => {
-              if (ItemName !== "" && ItemDescription !== "" && ItemPrice !== "" && ItemLocation !== "" && image != null && (ItemType === "Other" || ItemType === "Electronics" || ItemType === "Clothing" || ItemType === "Furniture" || ItemType === "Books" )) {
-                add_listing(
-                  Globalconfig.username,
-                  Globalconfig.name,
-                  ItemName,
-                  ItemDescription,
-                  ItemType,
-                  ItemPrice,
-                  ItemLocation,
-                  image
-                );
-
-              }
-              else {
-                  window.alert("One or more fields empty")
-              }
-          }
-        }
+            if (
+              ItemName !== "" &&
+              ItemDescription !== "" &&
+              ItemPrice !== "" &&
+              ItemLocation !== "" &&
+              image != null &&
+              (ItemType === "Other" ||
+                ItemType === "Electronics" ||
+                ItemType === "Clothing" ||
+                ItemType === "Furniture" ||
+                ItemType === "Books")
+            ) {
+              add_listing(
+                Globalconfig.username,
+                Globalconfig.name,
+                ItemName,
+                ItemDescription,
+                ItemType,
+                ItemPrice,
+                ItemLocation,
+                image,
+                -1
+              );
+            } else {
+              window.alert("One or more fields empty");
+            }
+          }}
         >
           SALE!
         </button>

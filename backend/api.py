@@ -105,7 +105,8 @@ def addToCart(cartInformation: dict):
     db.closeConnection()
     return {"message": buyer + " bought a thing!"}
 
-@app.get("/getCart/{username}")
+
+@app.post("/getCart/{username}")
 def getUserCart(username: str):
     db = dbmethods()
     cart = db.get_user_cart(username)
