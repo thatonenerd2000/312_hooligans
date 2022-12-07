@@ -56,11 +56,6 @@ const Listing = () => {
     <>
       <Menu />
       <div className="listings_page">
-        {/* {Globalconfig.name !== "" ? (
-        <h1>Hello there {Globalconfig.name}, welcome to the listings page</h1>
-      ) : (
-        <h1>Welcome to the listings page</h1>
-      )} */}
         {listings.map((listing) => {
           if (listing[9] !== "true") {
             return (
@@ -93,6 +88,8 @@ const Listing = () => {
                 )}
               </ListingsComponenet>
             );
+          } else {
+            return null;
           }
         })}
         <button onClick={(e) => navigate("/cart")}>Shopping Cart</button>

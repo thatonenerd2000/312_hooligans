@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 import ListingsComponenet from "../components/ListingsComponenet";
 import Menu from "../components/Menu.jsx";
 
+//Icons
+import { BsFillTrashFill } from "react-icons/bs";
+
 const UserProfile = () => {
   const Globalconfig = useContext(ConfigContext);
   const navigate = useNavigate();
@@ -47,7 +50,18 @@ const UserProfile = () => {
                     <div id="soldSign">
                       <h1>SOLD</h1>
                     </div>
-                  ) : null}
+                  ) : (
+                    <>
+                      <button id="setAuction">
+                        <h1>Set For Auction</h1>
+                      </button>
+                      <button id="deleteListing">
+                        <h1>
+                          <BsFillTrashFill />
+                        </h1>
+                      </button>
+                    </>
+                  )}
                 </ListingsComponenet>
               );
             })}
