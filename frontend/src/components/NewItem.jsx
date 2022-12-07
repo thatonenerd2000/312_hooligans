@@ -132,7 +132,7 @@ const NewItem = () => {
                 ItemPrice,
                 ItemLocation,
                 image,
-                -1
+                ""
               );
             } else {
               window.alert("One or more fields empty");

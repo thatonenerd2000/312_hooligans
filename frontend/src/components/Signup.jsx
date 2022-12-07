@@ -22,6 +22,7 @@ const Signup = (props) => {
         email: email,
         password: password,
       })
+
       .then((res) => {
         if (res.data.message === "User created successfully") {
           Globalconfig.setUsername(email.split("@")[0]);
@@ -88,22 +89,19 @@ const Signup = (props) => {
       <button
         onClick={() => {
           if (firstName !== "" && lastName !== "" && email.includes("@") && password === confirmPassword) {
+            Globalconfig.setUsername(email.split("@")[0]);
+            Globalconfig.setName(firstName + " " + lastName);
             createUser(firstName + " " + lastName, email, password);
+          } else if (firstName === "") {
+            window.alert("Please fill out first name");
+          } else if (lastName === "") {
+            window.alert("Please fill out last name");
+          } else if (!email.includes("@")) {
+            window.alert("Please fill out a valid email");
+          } else {
+            window.alert("One or more fields wrong");
           }
-          else if(firstName === ""){
-              window.alert("Please fill out first name")
-          }
-          else if(lastName === ""){
-              window.alert("Please fill out last name")
-          }
-          else if(!email.includes("@")){
-              window.alert("Please fill out a valid email")
-          }
-          else {
-              window.alert("One or more fields wrong")
-          }
-        }
-      }
+        }}
       >
         Create Account
       </button>
