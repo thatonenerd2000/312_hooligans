@@ -25,6 +25,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     getListingsAxios();
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -33,12 +34,22 @@ const UserProfile = () => {
       <div id="user_profile">
         {Globalconfig.name !== "" ? (
           <div>
-            <h1>Hello there {Globalconfig.name}, welcome to your profile</h1>
-            <hr></hr>
-            <h2>Your listings</h2>
-            <hr />
+            <div id="user_profile_greet">
+              <h1>Hello there {Globalconfig.name}, welcome to your profile</h1>
+              <hr></hr>
+              <h2>Your listings</h2>
+              <hr />
+            </div>
             {listings.map((listing) => {
-              return <ListingsComponenet listing={listing} />;
+              return (
+                <ListingsComponenet listing={listing}>
+                  {listing[9] === "true" ? (
+                    <div id="soldSign">
+                      <h1>SOLD</h1>
+                    </div>
+                  ) : null}
+                </ListingsComponenet>
+              );
             })}
           </div>
         ) : (

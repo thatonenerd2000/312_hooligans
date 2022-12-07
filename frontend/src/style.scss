@@ -25,7 +25,7 @@ html, h1, h2, h3, h4, h5, h6 {
     bottom: 10px;
     position: fixed;
     &:active{
-        
+
     }
 }
 
@@ -61,6 +61,15 @@ html, h1, h2, h3, h4, h5, h6 {
     height: 200px;
     padding:5px;
     border: 2px solid black;
+}
+
+#soldSign{
+    color: red;
+    text-align: center;
+    width: auto;
+    background-color: white;
+    border: 1px solid red;
+    border-radius: 5px;
 }
 
 //Logo
@@ -215,7 +224,7 @@ html, h1, h2, h3, h4, h5, h6 {
     font-family: 'Nunito Sans', sans-serif;
 }
 
-#user_profile h1, h2{
+#user_profile_greet{
     color: white;
 }
 

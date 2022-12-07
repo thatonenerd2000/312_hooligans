@@ -62,36 +62,38 @@ const Listing = () => {
         <h1>Welcome to the listings page</h1>
       )} */}
         {listings.map((listing) => {
-          return (
-            <ListingsComponenet key={listing[0]} listing={listing}>
-              {Globalconfig.name !== "" ? (
-                <div>
-                <button
-                  onClick={(e) => {
-                    addToCart(listing[0], Globalconfig.username);
-                  }}
-                >
-                  Add to cart
-                </button>
-                <button
-                  onClick={(e) => {
-                    buyNow(listing[0], Globalconfig.username);
-                  }}
-              >
-                Buy Now!
-              </button>
-              </div>
-              ) : (
-                <button
-                  onClick={(e) => {
-                    navigate("/");
-                  }}
-                >
-                  Sign in to buy
-                </button>
-              )}
-            </ListingsComponenet>
-          );
+          if (listing[9] !== "true") {
+            return (
+              <ListingsComponenet key={listing[0]} listing={listing}>
+                {Globalconfig.name !== "" ? (
+                  <div>
+                    <button
+                      onClick={(e) => {
+                        addToCart(listing[0], Globalconfig.username);
+                      }}
+                    >
+                      Add to cart
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        buyNow(listing[0], Globalconfig.username);
+                      }}
+                    >
+                      Buy Now!
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      navigate("/");
+                    }}
+                  >
+                    Sign in to buy
+                  </button>
+                )}
+              </ListingsComponenet>
+            );
+          }
         })}
         <button onClick={(e) => navigate("/cart")}>Shopping Cart</button>
         <button
