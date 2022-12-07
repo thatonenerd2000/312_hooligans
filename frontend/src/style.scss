@@ -8,18 +8,24 @@ html, h1, h2, h3, h4, h5, h6 {
 }
 
 // Components
-#shoppingCart{
+.MenuButton{
     height: 60px;
     width: 60px;
     border-radius: 100%;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    position: fixed;
     cursor: pointer;
     transition: 0.1s ease-in-out;
     &:hover{
         scale: 1.1;
+    }
+}
+
+#MenuButtonsContainer{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    position: fixed;
+    &:active{
+
     }
 }
 
@@ -55,6 +61,15 @@ html, h1, h2, h3, h4, h5, h6 {
     height: 200px;
     padding:5px;
     border: 2px solid black;
+}
+
+#soldSign{
+    color: red;
+    text-align: center;
+    width: auto;
+    background-color: white;
+    border: 1px solid red;
+    border-radius: 5px;
 }
 
 //Logo
@@ -189,7 +204,6 @@ html, h1, h2, h3, h4, h5, h6 {
 }
 
 //Listings
-
 .listings_page{
     width: 100vw;
     min-height: 100vh;
@@ -197,6 +211,36 @@ html, h1, h2, h3, h4, h5, h6 {
     background-color: #0C2D48;
     background-size: cover;
     text-align: center;
+}
+
+// Profile
+#user_profile{
+    width: 100vw;
+    min-height: 100vh;
+    max-height: fit-content;
+    background-color: #0C2D48;
+    background-size: cover;
+    text-align: center;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+#user_profile_greet{
+    color: white;
+}
+
+// Shopping Cart
+#shopping_cart{
+    width: 100vw;
+    min-height: 100vh;
+    max-height: fit-content;
+    background-color: #0C2D48;
+    background-size: cover;
+    text-align: center;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+#shopping_cart h1, h2{
+    color: white;
 }
 
 // Animations

@@ -94,7 +94,7 @@ def addListing(listingInformation: dict):
     image = listingInformation["image"]
     db = dbmethods()
     db.add_listing(name, username, item_name, item_type,
-                   description, price, location, image, "NULL", "NULL")
+                   description, price, location, image, "false", "NULL")
     db.closeConnection()
     return {"message": "Listing added successfully"}
 
@@ -118,22 +118,24 @@ def getUserCart(username: str):
 
 
 @app.post("/checkoutCart")
-def checkoutCart(username : dict):
+def checkoutCart(username: dict):
     username = username["username"]
     db = dbmethods()
     cart = db.checkout_entire_cart(username)
     db.closeConnection()
 
+
 @app.post("/buyNow")
-def buyNow(checkoutInformation : dict):
+def buyNow(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
     db.checkout_singlex_item(username, itemId)
     db.closeConnection()
 
+
 @app.post("/removeOne")
-def removeOne(checkoutInformation : dict):
+def removeOne(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
