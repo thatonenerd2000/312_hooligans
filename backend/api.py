@@ -1,9 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 import helpers
 import bcrypt
 from dbmethods import dbmethods
 import helpers
+import json
 
 
 origins = [
@@ -91,7 +92,7 @@ def addListing(listingInformation: dict):
     location = listingInformation["location"]
     image = listingInformation["image"]
     db = dbmethods()
-    db.add_listing(username, name, item_name, item_type,
+    db.add_listing(name, username, item_name, item_type,
                    description, price, location, image, "NULL", "NULL")
     db.closeConnection()
     return {"message": "Listing added successfully"}
@@ -145,3 +146,15 @@ def getListing(itemId: str):
         item = db.get_item_from_id(itemId)
         db.closeConnection()
         return item
+
+# Websockets
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        # receive a json object
+        data = await websocket.receive_text()
+        print(data)
+        await websocket.send_json({"message": data})

@@ -1,8 +1,5 @@
 // import React, { useContext } from "react";
 
-//Context
-// import { ConfigContext } from "../GlobalContext";
-
 //Components
 import NewItem from "../components/NewItem.jsx";
 
