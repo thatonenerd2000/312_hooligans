@@ -37,7 +37,7 @@ def createUser(userInformation: dict):
     hashedPassword = bcrypt.hashpw(utf, salt)
 
     db = dbmethods()
-    db.create_user(name, email, username, hashedPassword.decode())
+    db.create_user(name, email, username, hashedPassword.decode(), "NULL")
     db.closeConnection()
     return {"message": "User created successfully"}
 
