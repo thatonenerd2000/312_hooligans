@@ -43,7 +43,7 @@ def createUser(userInformation: dict):
     db.create_user(name, email, username, hashedPassword.decode(), authtoken)
     db.closeConnection()
     content = {"message": "User created successfully"}
-    response = Response(content=json.dumps(content), status_code=200)
+    response = JSONResponse(content=content)
     response.set_cookie(key="authtoken", value=authtoken)
     return response
 
