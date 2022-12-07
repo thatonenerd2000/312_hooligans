@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import bcrypt
 from dbmethods import dbmethods
 import helpers
@@ -40,7 +41,10 @@ def createUser(userInformation: dict):
     db = dbmethods()
     db.create_user(name, email, username, hashedPassword.decode(), authtoken)
     db.closeConnection()
-    return {"message": "User created successfully"}
+    content = {"message": "User created successfully"}
+    response = JSONResponse(content = content)
+    response.set_cookie(key="token", value=authtoken, httponly=True)
+    return response
 
 @app.post("/cookie")
 def create_cookie(response: Response):
