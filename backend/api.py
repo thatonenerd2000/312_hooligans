@@ -1,4 +1,5 @@
-from fastapi import FastAPI, WebSocket
+from typing import List
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import helpers
 import bcrypt
@@ -36,7 +37,7 @@ def createUser(userInformation: dict):
     hashedPassword = bcrypt.hashpw(utf, salt)
 
     db = dbmethods()
-    db.create_user(name, email, username, hashedPassword.decode())
+    db.create_user(name, email, username, hashedPassword.decode(), "NULL")
     db.closeConnection()
     return {"message": "User created successfully"}
 
@@ -128,7 +129,7 @@ def buyNow(checkoutInformation : dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
-    db.checkout_single_item(username, itemId)
+    db.checkout_singlex_item(username, itemId)
     db.closeConnection()
 
 @app.post("/removeOne")
@@ -149,13 +150,39 @@ def getListing(itemId: str):
         return item
 
 # Websockets
+# From Fastapi documentation
+# https://fastapi.tiangolo.com/zh/advanced/websockets/
+
+
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def send_personal_message(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_json(message)
+
+
+manager = ConnectionManager()
 
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        # receive a json object
-        data = await websocket.receive_text()
-        print(data)
-        await websocket.send_json({"message": data})
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            data = json.loads(data)
+            await manager.broadcast(data)
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)

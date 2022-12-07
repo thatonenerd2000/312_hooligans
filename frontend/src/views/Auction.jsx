@@ -6,6 +6,7 @@ import { ConfigContext } from "../GlobalContext";
 const Auction = () => {
   const Globalconfig = useContext(ConfigContext);
   const [messages, setMessages] = useState("");
+  const [chatHistory, setChatHistory] = useState([]);
   const [ws, setWs] = useState();
 
   useEffect(() => {
@@ -14,11 +15,15 @@ const Auction = () => {
     setWs(ws);
     ws.onmessage = (e) => {
       const WSmessage = JSON.parse(e.data);
-      console.log(e);
-      setMessages([...messages, WSmessage]);
+      if (chatHistory.length === 0) {
+        setChatHistory([WSmessage]);
+      } else {
+        setChatHistory([...chatHistory, WSmessage]);
+      }
+      console.log(chatHistory);
     };
     // eslint-disable-next-line
-  }, [messages]);
+  }, [chatHistory]);
 
   return (
     <div>
@@ -33,14 +38,25 @@ const Auction = () => {
       <button
         onClick={(e) => {
           const message = {
+            username: Globalconfig.username,
             message: messages,
           };
-          ws.send(message);
+          ws.send(JSON.stringify(message));
         }}
       >
         Send
       </button>
-      <div id="messages"></div>
+      <div id="messages">
+        {chatHistory.map((message) => {
+          return (
+            <div>
+              <p>
+                {message.username}:{message.message}
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

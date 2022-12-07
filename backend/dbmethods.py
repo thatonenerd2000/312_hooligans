@@ -4,20 +4,20 @@ import psycopg2
 class dbmethods:
     def __init__(self):
         # Comment the lines below if not using docker eg dev environment
-        self.connection = psycopg2.connect(
-            database="cse312_project", user="root", password="password", host="localhost", port="5432")
+        # self.connection = psycopg2.connect(
+        #     database="cse312_project", user="root", password="", host="localhost", port="5432")
 
         # Comment the line below if using docker eg prod environment
-        #self.connection = psycopg2.connect(
-        #    database="cse312_project", user="root", password="password", host="postgres", port="5432")
+        self.connection = psycopg2.connect(
+            database="cse312_project", user="root", password="password", host="postgres", port="5432")
 
         self.cur = self.connection.cursor()
 
-    def create_user(self, name, email, username, hashedPass):
+    def create_user(self, name, email, username, hashedPass, authToken):
         self.cur.execute(
-            '''CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name VARCHAR(255), email VARCHAR(255), username VARCHAR(255), password VARCHAR(255))''')
+            '''CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name VARCHAR(255), email VARCHAR(255), username VARCHAR(255), password VARCHAR(255), authToken VARCHAR(255))''')
         self.cur.execute(
-            "INSERT INTO users (name, email, username, password) VALUES (%s, %s, %s, %s)", (name, email, username, hashedPass))
+            "INSERT INTO users (name, email, username, password, authToken) VALUES (%s, %s, %s, %s, %s)", (name, email, username, hashedPass, authToken))
         self.connection.commit()
 
     def verifyLogin(self, username):

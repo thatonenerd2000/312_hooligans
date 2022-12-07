@@ -1,16 +1,4 @@
-import React, { useContext } from "react";
-
-// Context
-import { ConfigContext } from "../GlobalContext";
-
-//Router
-import { useNavigate } from "react-router-dom";
-
 const ListingsComponenet = (props) => {
-  const Globalconfig = useContext(ConfigContext);
-
-  let navigate = useNavigate();
-
   return (
     <div className="listing">
       <div style={{ textAlign: "left" }}>
