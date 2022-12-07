@@ -1,2 +1,3 @@
 pipfile.lock
-.idea
+idea
+__pycache__

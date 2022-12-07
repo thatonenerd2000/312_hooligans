@@ -81,6 +81,13 @@ const Listing = () => {
           Add listings
         </button>
         <button
+          onClick={() => {
+            navigate("/auction");
+          }}
+        >
+          Auctions
+        </button>
+        <button
           onClick={(e) => {
             navigate("/profile");
           }}
