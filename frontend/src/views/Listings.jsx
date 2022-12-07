@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 //Components
 import ListingsComponenet from "../components/ListingsComponenet";
-import ShoppingCartButton from "../components/ShoppingCartButton";
+import Menu from "../components/Menu";
 
 const Listing = () => {
   const Globalconfig = useContext(ConfigContext);
@@ -42,7 +42,7 @@ const Listing = () => {
 
   return (
     <>
-      <ShoppingCartButton />
+      <Menu />
       <div className="listings_page">
         {/* {Globalconfig.name !== "" ? (
         <h1>Hello there {Globalconfig.name}, welcome to the listings page</h1>

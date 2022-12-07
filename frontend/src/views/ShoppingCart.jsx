@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 //Components
 import ListingsComponenet from "../components/ListingsComponenet";
+import Menu from "../components/Menu.jsx";
 
 const ShoppingCart = () => {
   const Globalconfig = useContext(ConfigContext);
@@ -38,8 +39,9 @@ const ShoppingCart = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Shopping Cart</h1>
+    <div id="shopping_cart">
+      <Menu />
+      <h1>Your Cart</h1>
       <hr />
       {cartItems.map((item) => {
         return <ListingsComponenet key={item[0]} listing={item} />;
