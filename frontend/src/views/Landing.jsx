@@ -23,7 +23,7 @@ const Landing = () => {
           <Login display={logDisplay ? "block" : "none"}>
             <br />
             <button
-              onClick={() => {
+              onClick={(e) => {
                 setLogDisplay(false);
               }}
             >

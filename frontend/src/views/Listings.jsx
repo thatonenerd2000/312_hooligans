@@ -36,8 +36,6 @@ const Listing = () => {
   };
 
   const buyNow = (itemId, buyerUsername) => {
-    console.log(itemId);
-    console.log(buyerUsername);
     axios.post(`${Globalconfig.host}/buyNow`, {
       headers: {
         "Content-Type": "application/json",
