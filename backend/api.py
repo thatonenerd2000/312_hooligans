@@ -117,24 +117,23 @@ def getUserCart(username: str):
     return cart
 
 
-@app.post("/checkoutCart/{username}")
-def checkoutCart(username: str):
+@app.post("/checkoutCart")
+def checkoutCart(username : dict):
+    username = username["username"]
     db = dbmethods()
     cart = db.checkout_entire_cart(username)
     db.closeConnection()
 
-
-@app.post("/buyOne/{username}")
-def buyOne(checkoutInformation):
+@app.post("/buyNow")
+def buyNow(checkoutInformation : dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
     db.checkout_singlex_item(username, itemId)
     db.closeConnection()
 
-
-@app.post("/removeOne/{username}")
-def removeOne(checkoutInformation):
+@app.post("/removeOne")
+def removeOne(checkoutInformation : dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()

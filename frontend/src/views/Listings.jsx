@@ -35,6 +35,18 @@ const Listing = () => {
     });
   };
 
+  const buyNow = (itemId, buyerUsername) => {
+    axios.post(`${Globalconfig.host}/buyNow`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      },
+      itemId: itemId,
+      buyerUsername: buyerUsername,
+    });
+  };
+
   useEffect(() => {
     getListingsFromDB();
     // eslint-disable-next-line
@@ -53,6 +65,7 @@ const Listing = () => {
           return (
             <ListingsComponenet key={listing[0]} listing={listing}>
               {Globalconfig.name !== "" ? (
+                <div>
                 <button
                   onClick={(e) => {
                     addToCart(listing[0], Globalconfig.username);
@@ -60,6 +73,14 @@ const Listing = () => {
                 >
                   Add to cart
                 </button>
+                <button
+                  onClick={(e) => {
+                    buyNow(listing[0], Globalconfig.username);
+                  }}
+              >
+                Buy Now!
+              </button>
+              </div>
               ) : (
                 <button
                   onClick={(e) => {

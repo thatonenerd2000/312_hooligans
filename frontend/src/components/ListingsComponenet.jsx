@@ -7,8 +7,9 @@ const ListingsComponenet = (props) => {
       <br />
       <div style={{ textAlign: "left" }}>
         <h2>{props.listing[3]}</h2>
-        <p>{props.listing[4]}</p>
+        <h4>Seller: {props.listing[2]}</h4>
         <hr />
+        <p>Category: {props.listing[4]}</p>
         <p>{props.listing[5]}</p>
         <p>
           <strong>Price:</strong> ${props.listing[6]}
