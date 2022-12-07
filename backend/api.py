@@ -91,10 +91,11 @@ def addListing(listingInformation: dict):
     location = listingInformation["location"]
     image = listingInformation["image"]
     db = dbmethods()
-    db.add_listing(name, username, item_name, item_type,
-                   description, price, location, image, False)
+    db.add_listing(username, name, item_name, item_type,
+                   description, price, location, image, "NULL", "NULL")
     db.closeConnection()
     return {"message": "Listing added successfully"}
+
 
 @app.post("/addToCart")
 def addToCart(cartInformation: dict):
@@ -106,12 +107,13 @@ def addToCart(cartInformation: dict):
     return {"message": buyer + " bought a thing!"}
 
 
-@app.post("/getCart/{username}")
+@app.get("/getCart/{username}")
 def getUserCart(username: str):
     db = dbmethods()
     cart = db.get_user_cart(username)
     db.closeConnection()
     return cart
+
 
 @app.post("/checkoutCart/{username}")
 def checkoutCart(username: str):
@@ -135,9 +137,11 @@ def removeOne(checkoutInformation):
     db.remove_item_from_cart(username, itemId)
     db.closeConnection()
 
-@app.post("/getListing")
-def getListing(idInformation):
-    itemId = idInformation['itemId']
-    db = dbmethods()
-    db.get_item_from_id(itemId)
-    db.closeConnection()
+
+@app.get("/getListing/{itemId}")
+def getListing(itemId: str):
+    if itemId != "undefined":
+        db = dbmethods()
+        item = db.get_item_from_id(itemId)
+        db.closeConnection()
+        return item

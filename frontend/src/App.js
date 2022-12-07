@@ -6,6 +6,7 @@ import Landing from "./views/Landing.jsx";
 import Listings from "./views/Listings.jsx";
 import AddListing from "./views/Add_listing.jsx";
 import UserProfile from "./views/UserProfile.jsx";
+import ShoppingCart from "./views/ShoppingCart.jsx";
 
 //Global Context
 import GlobalContext from "./GlobalContext";
@@ -23,6 +24,7 @@ const App = () => {
             <Route exact path="/listings" element={<Listings />} />
             <Route exact path="/add_listing" element={<AddListing />} />
             <Route exact path="/profile" element={<UserProfile />} />
+            <Route exact path="/cart" element={<ShoppingCart />} />
           </Routes>
         </BrowserRouter>
       </GlobalContext>

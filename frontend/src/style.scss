@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200&display=swap');
+
 body,
 html, h1, h2, h3, h4, h5, h6 {
     margin: 0px;
@@ -6,14 +8,46 @@ html, h1, h2, h3, h4, h5, h6 {
 }
 
 // Components
+#shoppingCart{
+    height: 60px;
+    width: 60px;
+    border-radius: 100%;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    position: fixed;
+    cursor: pointer;
+    transition: 0.1s ease-in-out;
+    &:hover{
+        scale: 1.1;
+    }
+}
+
+
 .listing{
-    height: 100%;
-    width: 25vw;
-    background-color: #efefef;
+    height: auto;
+    width: 370px;
+    background-color: white;
     padding: 10px;
     margin: 10px;
     border-radius:2%;
     display: inline-block;
+    font-family: 'Nunito Sans', sans-serif;
+    transition: 0.1s ease-in-out;
+    animation: fadeIn 0.5s ease-in-out; 
+    &:hover {
+        transform: scale(1.02);;
+    }
+}
+
+.listing button{
+    background-color: #145DA0;
+    border: none;
+    border-radius: 2%;
+    padding: 10px;
+    margin: 10px;
+    font-family: 'Nunito Sans', sans-serif;;
+    color: white;
 }
 
 #listing_image{
@@ -159,11 +193,30 @@ html, h1, h2, h3, h4, h5, h6 {
     width: 100vw;
     min-height: 100vh;
     max-height: fit-content;
-    background-color: white;
-    display: inline;
+    background-color: #0C2D48;
+    background-size: cover;
+    text-align: center;
 }
 
 // Animations
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes hoverExpand {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.03);
+    }
+}
+
 @keyframes fadeIn {
     0% {
         opacity: 0;
