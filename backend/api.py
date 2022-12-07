@@ -1,12 +1,13 @@
 from typing import List
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Response
 from fastapi.middleware.cors import CORSMiddleware
-import helpers
 import bcrypt
 from dbmethods import dbmethods
 import helpers
 import json
-
+import hashlib
+global authtoken
+authtoken = ""
 
 origins = [
     # NEED TO MODIFY THIS **SECURITY ISSUE**
@@ -35,11 +36,15 @@ def createUser(userInformation: dict):
     salt = bcrypt.gensalt()
     utf = plainTextPassword.encode('utf-8')
     hashedPassword = bcrypt.hashpw(utf, salt)
-
+    authtoken = hashlib.sha256(helpers.generate_token().encode("utf-8")).hexdigest()
     db = dbmethods()
-    db.create_user(name, email, username, hashedPassword.decode(), "NULL")
+    db.create_user(name, email, username, hashedPassword.decode(), authtoken)
     db.closeConnection()
     return {"message": "User created successfully"}
+
+@app.post("/cookie")
+def create_cookie(response: Response):
+    response.set_cookie(key="token", value=authtoken, httponly=True)
 
 
 @app.post("/verifyUser")
@@ -49,6 +54,7 @@ def verifyUser(userInformation: dict):
     db = dbmethods()
     user = db.verifyLogin(email)
     hashedPassword = user[0][4]
+
     db.closeConnection()
     check = bcrypt.checkpw(plainTextPassword.encode(
         'utf-8'), hashedPassword.encode('utf-8'))
