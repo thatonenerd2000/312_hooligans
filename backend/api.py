@@ -7,8 +7,7 @@ from dbmethods import dbmethods
 import helpers
 import json
 import hashlib
-global authtoken
-authtoken = ""
+
 
 origins = [
     # NEED TO MODIFY THIS **SECURITY ISSUE**
@@ -26,6 +25,8 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+global authtoken
+authtoken = ""
 
 @app.post("/createUser")
 def createUser(userInformation: dict):
@@ -42,14 +43,9 @@ def createUser(userInformation: dict):
     db.create_user(name, email, username, hashedPassword.decode(), authtoken)
     db.closeConnection()
     content = {"message": "User created successfully"}
-    response = JSONResponse(content = content)
-    response.set_cookie(key="token", value=authtoken, httponly=True)
+    response = Response(content=json.dumps(content), status_code=200)
+    response.set_cookie(key="authtoken", value=authtoken)
     return response
-
-@app.post("/cookie")
-def create_cookie(response: Response):
-    response.set_cookie(key="token", value=authtoken, httponly=True)
-
 
 @app.post("/verifyUser")
 def verifyUser(userInformation: dict):
@@ -58,7 +54,6 @@ def verifyUser(userInformation: dict):
     db = dbmethods()
     user = db.verifyLogin(email)
     hashedPassword = user[0][4]
-
     db.closeConnection()
     check = bcrypt.checkpw(plainTextPassword.encode(
         'utf-8'), hashedPassword.encode('utf-8'))
