@@ -30,6 +30,9 @@ const ShoppingCart = () => {
         getItem(cart[2]);
       });
     });
+    const removeItem = () => {
+      
+    }
   };
 
   useEffect(() => {
@@ -42,7 +45,9 @@ const ShoppingCart = () => {
       <h1>Shopping Cart</h1>
       <hr />
       {cartItems.map((item) => {
-        return <ListingsComponenet key={item[0]} listing={item} />;
+        return (<ListingsComponenet key={item[0]} listing={item}> 
+        
+        </ListingsComponenet>);
       })}
       <button
         onClick={(e) => {

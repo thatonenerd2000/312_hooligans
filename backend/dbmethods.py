@@ -102,6 +102,15 @@ class dbmethods:
     def checkout_single_item(self, username, item):
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS cart (id SERIAL PRIMARY KEY, username VARCHAR(255), item VARCHAR(255), bought VARCHAR(255))''')
+        print("I called!")
+        self.cur.execute(
+            """SELECT * FROM cart WHERE username = %s and item = '%s'""", (username, item)
+        )
+        item = self.cur.fetchall()
+        if len(item) == 0:
+            self.cur.execute(
+                """INSERT INTO cart VALUES(username, item, bought) VALUES (%s,%s,%s)""", (username, item, False)
+            )
         self.cur.execute(
             """UPDATE listings SET soldStatus = 'True' WHERE id = %s""", (item))
         self.cur.execute(

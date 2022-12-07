@@ -122,8 +122,9 @@ def checkoutCart(username: str):
     cart = db.checkout_entire_cart(username)
     db.closeConnection()
 
-@app.post("/buyOne/{username}")
-def buyOne(checkoutInformation):
+@app.post("/buyNow")
+def buyNow(checkoutInformation):
+    print(checkoutInformation)
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
