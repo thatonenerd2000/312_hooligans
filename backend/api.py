@@ -81,17 +81,6 @@ async def verifyAuth(authToken: Union[str, None] = Cookie(default=None)):
     else:
         return {"message": "User verification failed"}
 
-@app.post("/verifyAuth1")
-def verifyAuth1(userInfo: dict):
-    authToken = userInfo["authToken"]
-    db = dbmethods()
-    user = db.verifyAuth(authToken)
-    db.closeConnection()
-    if hashlib.sha256(authToken.encode("utf-8")).hexdigest() == user[0][5]:
-        return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
-    else:
-        return {"message": "User verification failed"}
-
 
 @app.get("/getListings/{username}")
 def getListings(username: str):
