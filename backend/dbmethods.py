@@ -26,6 +26,11 @@ class dbmethods:
         user = self.cur.fetchall()
         return user
 
+    def update_authToken(self, username, authToken):
+        self.cur.execute(
+            '''UPDATE users SET authToken = %s WHERE username = %s''', (authToken, username,))
+        self.connection.commit()
+
     def add_listing(self, name, username, item_name, item_type, description, price, location, image, soldStatus, soldTo):
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS listings (id SERIAL PRIMARY KEY, name VARCHAR(255), username VARCHAR(255), item_name VARCHAR(255), item_type VARCHAR(255), description VARCHAR(255), price VARCHAR(255), location VARCHAR(255), image VARCHAR, soldStatus VARCHAR(255), soldTo VARCHAR(255))''')

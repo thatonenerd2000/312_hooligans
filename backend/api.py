@@ -39,15 +39,13 @@ def createUser(userInformation: dict):
     salt = bcrypt.gensalt()
     utf = plainTextPassword.encode('utf-8')
     hashedPassword = bcrypt.hashpw(utf, salt)
-    authtoken = hashlib.sha256(
-        helpers.generate_token().encode("utf-8")).hexdigest()
+    authtoken = hashlib.sha256(helpers.generate_token().encode("utf-8")).hexdigest()
     db = dbmethods()
     db.create_user(name, email, username, hashedPassword.decode(), authtoken)
     db.closeConnection()
     content = {"message": "User created successfully"}
     response = JSONResponse(content=content)
-    response.set_cookie(key="authtoken", value=authtoken,
-                        httponly=True)
+    response.set_cookie(key="authtoken", value=authtoken, httponly=True,max_age=3600)
     return response
 
 
@@ -58,14 +56,19 @@ def verifyUser(userInformation: dict):
     db = dbmethods()
     user = db.verifyLogin(email)
     hashedPassword = user[0][4]
-    db.closeConnection()
     check = bcrypt.checkpw(plainTextPassword.encode(
         'utf-8'), hashedPassword.encode('utf-8'))
     if check:
-        return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+        authtoken = hashlib.sha256(helpers.generate_token().encode("utf-8")).hexdigest()
+        db.update_authToken(user[0][3],authtoken)
+        db.closeConnection()
+        content = {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+        response = JSONResponse(content=content)
+        response.set_cookie(key="authtoken", value=authtoken, httponly=True, max_age=3600)
+        return response
     else:
+        db.closeConnection()
         return {"message": "User verification failed"}
-
 
 @app.get("/getListings/{username}")
 def getListings(username: str):
