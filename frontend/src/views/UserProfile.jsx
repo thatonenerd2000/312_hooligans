@@ -19,17 +19,25 @@ const UserProfile = () => {
   const navigate = useNavigate();
 
   const [listings, getListings] = React.useState([""]);
+  const [purchases, getUserPurchases] = React.useState([""]);
 
   const getListingsAxios = () => {
     axios.get(`${Globalconfig.host}/getListings/${Globalconfig.username}`).then((res) => {
       getListings(res.data);
     });
   };
+  const getUserPurchasesAxios = () => {
+    axios.get(`${Globalconfig.host}/getUserPurchases/${Globalconfig.username}`).then((res) => {
+      getUserPurchases(res.data);
+    });
+  };
 
   useEffect(() => {
     getListingsAxios();
+    getUserPurchasesAxios();
+    console.log(purchases);
     // eslint-disable-next-line
-  }, []);
+  },[]);
 
   return (
     <>
@@ -65,6 +73,13 @@ const UserProfile = () => {
                 </ListingsComponenet>
               );
             })}
+            <hr></hr>
+              <h2>Purchased Items</h2>
+            <hr />
+            {purchases.map((listing) => {
+              return (<ListingsComponenet listing = {listing}></ListingsComponenet>);
+            })}
+
           </div>
         ) : (
           <div>

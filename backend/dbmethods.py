@@ -4,12 +4,12 @@ import psycopg2
 class dbmethods:
     def __init__(self):
         # Comment the lines below if not using docker eg dev environment
-        # self.connection = psycopg2.connect(
-        #     database="cse312_project", user="root", password="", host="localhost", port="5432")
+        self.connection = psycopg2.connect(
+            database="cse312_project", user="root", password="password", host="localhost", port="5432")
 
         # Comment the line below if using docker eg prod environment
-        self.connection = psycopg2.connect(
-            database="cse312_project", user="root", password="password", host="postgres", port="5432")
+        #self.connection = psycopg2.connect(
+        #    database="cse312_project", user="root", password="password", host="postgres", port="5432")
 
         self.cur = self.connection.cursor()
 
@@ -66,7 +66,7 @@ class dbmethods:
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS cart (id SERIAL PRIMARY KEY, username VARCHAR(255), item VARCHAR(255), bought VARCHAR(255))''')
         self.cur.execute(
-            '''SELECT * FROM cart WHERE username = %s''', (username,)
+            """SELECT * FROM cart WHERE username = %s AND bought != 'true'""", (username,)
         )
         my_cart = self.cur.fetchall()
         return my_cart
@@ -115,16 +115,23 @@ class dbmethods:
                     username, item, False)
             )
         self.cur.execute(
-            """UPDATE listings SET soldStatus = True WHERE id = '%s'""", (item))
+            """UPDATE listings SET soldStatus = true WHERE id = %s""", (item))
         self.cur.execute(
-            """UPDATE cart SET bought = True WHERE username = '%s' AND item = '%s'""" % (username, item))
+            """UPDATE cart SET bought = true WHERE username = '%s' AND item = '%s'""" % (username, item))
         self.cur.execute(
-            """UPDATE listings SET soldTo = '%s' WHERE id = '%s'""", (
+            """UPDATE listings SET soldTo = %s WHERE id = %s""", (
                 username, item)
         )
         self.cur.execute(
-            """DELETE FROM cart WHERE item = '%s' AND username != '%s'""", (item, username))
+            """DELETE FROM cart WHERE item = %s AND username != %s""", (item, username))
         self.connection.commit()
+    def get_user_purchases(self, username):
+        self.cur.execute(
+            """SELECT * FROM listings where soldTo = '%s'""" % (
+                username)
+        )
+        items = self.cur.fetchall()
+        return items
 
     def remove_item_from_cart(self, username, item):
         self.cur.execute(
