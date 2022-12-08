@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 import ListingsComponenet from "../components/ListingsComponenet";
 import Menu from "../components/Menu.jsx";
 
+//Icons
+import { BsFillTrashFill } from "react-icons/bs";
+
 const UserProfile = () => {
   const Globalconfig = useContext(ConfigContext);
   const navigate = useNavigate();
@@ -48,27 +51,28 @@ const UserProfile = () => {
               <h2>Your listings</h2>
               <hr />
             </div>
-            <div>
-              {listings.map((listing) => {
-                return (
-                  <ListingsComponenet listing={listing}>
-                    {listing[9] === "true" ? (
-                      <div id="soldSign">
-                        <h1>SOLD</h1>
-                      </div>
-                    ) : null}
-                  </ListingsComponenet>
-                );
-              })}
-              <hr></hr>
-              <h2>Your Purchases</h2>
-              <hr />
-              {purchases.map((purchase) => {
-                return (
-                  <ListingsComponenet listing={purchase}/>
-                );
-              })}
-            </div>
+            {listings.map((listing) => {
+              return (
+                <ListingsComponenet listing={listing}>
+                  {listing[9] === "true" ? (
+                    <div id="soldSign">
+                      <h1>SOLD</h1>
+                    </div>
+                  ) : (
+                    <>
+                      <button id="setAuction">
+                        <h1>Set For Auction</h1>
+                      </button>
+                      <button id="deleteListing">
+                        <h1>
+                          <BsFillTrashFill />
+                        </h1>
+                      </button>
+                    </>
+                  )}
+                </ListingsComponenet>
+              );
+            })}
           </div>
         ) : (
           <div>
