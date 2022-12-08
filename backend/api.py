@@ -28,6 +28,7 @@ app.add_middleware(
 global authtoken
 authtoken = ""
 
+
 @app.post("/createUser")
 def createUser(userInformation: dict):
     name = userInformation["name"]
@@ -38,14 +39,17 @@ def createUser(userInformation: dict):
     salt = bcrypt.gensalt()
     utf = plainTextPassword.encode('utf-8')
     hashedPassword = bcrypt.hashpw(utf, salt)
-    authtoken = hashlib.sha256(helpers.generate_token().encode("utf-8")).hexdigest()
+    authtoken = hashlib.sha256(
+        helpers.generate_token().encode("utf-8")).hexdigest()
     db = dbmethods()
     db.create_user(name, email, username, hashedPassword.decode(), authtoken)
     db.closeConnection()
     content = {"message": "User created successfully"}
     response = JSONResponse(content=content)
-    response.set_cookie(key="authtoken", value=authtoken)
+    response.set_cookie(key="authtoken", value=authtoken,
+                        httponly=True)
     return response
+
 
 @app.post("/verifyUser")
 def verifyUser(userInformation: dict):
