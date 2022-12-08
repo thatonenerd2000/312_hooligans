@@ -69,7 +69,7 @@ const UserProfile = () => {
                         onClick={(e) => {
                           createAuction(listing[0]);
                           Globalconfig.setAuctionLists((prev) => [...prev, listing]);
-                          navigate("/auction");
+                          navigate(`/auction/${listing[0]}`);
                         }}
                         id="setAuction"
                       >

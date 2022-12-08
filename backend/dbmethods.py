@@ -4,12 +4,12 @@ import psycopg2
 class dbmethods:
     def __init__(self):
         # Comment the lines below if not using docker eg dev environment
-        # self.connection = psycopg2.connect(
-        #     database="cse312_project", user="root", password="", host="localhost", port="5432")
+        self.connection = psycopg2.connect(
+            database="cse312_project", user="root", password="", host="localhost", port="5432")
 
         # Comment the line below if using docker eg prod environment
-        self.connection = psycopg2.connect(
-            database="cse312_project", user="root", password="password", host="postgres", port="5432")
+        # self.connection = psycopg2.connect(
+        #     database="cse312_project", user="root", password="password", host="postgres", port="5432")
 
         self.cur = self.connection.cursor()
 
@@ -137,6 +137,30 @@ class dbmethods:
         self.cur.execute("""SELECT * FROM listings WHERE id = %s""", (item))
         the_item = self.cur.fetchone()
         return the_item
+
+    def addAuction(self, itemID, highestBid, highestBidder, auctionEnd):
+        self.cur.execute(
+            '''CREATE TABLE IF NOT EXISTS auctions (id SERIAL PRIMARY KEY, itemID VARCHAR(255), highestBid VARCHAR(255), highestBidder VARCHAR(255), auctionEnd VARCHAR(255))''')
+        self.cur.execute(
+            """INSERT INTO auctions (itemID, highestBid, highestBidder, auctionEnd) VALUES (%s, %s, %s, %s)""", (
+                itemID, highestBid, highestBidder, auctionEnd))
+        self.connection.commit()
+
+    def getAuction(self):
+        self.cur.execute(
+            '''CREATE TABLE IF NOT EXISTS auctions (id SERIAL PRIMARY KEY, itemID VARCHAR(255), highestBid VARCHAR(255), highestBidder VARCHAR(255), auctionEnd VARCHAR(255))''')
+        self.cur.execute(
+            '''SELECT * FROM auctions''')
+        auctions = self.cur.fetchall()
+        return auctions
+
+    def endAuction(self, itemID):
+        self.cur.execute(
+            '''CREATE TABLE IF NOT EXISTS auctions (id SERIAL PRIMARY KEY, itemID VARCHAR(255), highestBid VARCHAR(255), highestBidder VARCHAR(255), auctionEnd VARCHAR(255))''')
+        self.cur.execute(
+            """DELETE FROM auctions WHERE itemID = %s""", (itemID))
+        self.connection.commit()
+
     # Call this method every time you call any db methods
 
     def closeConnection(self):

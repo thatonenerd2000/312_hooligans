@@ -1,33 +1,37 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 //Context
 import { ConfigContext } from "../GlobalContext";
 
 //Components
 import AuctionComp from "../components/AuctionComp";
+import Menu from "../components/Menu";
 
 const Auction = () => {
   const Globalconfig = useContext(ConfigContext);
 
+  const params = useParams();
+
+  const itemId = params.itemId;
+  const [item, setItem] = useState([]);
   const [chatHistory, setChatHistory] = useState([]);
   const [highestBid, setHighestBid] = useState(0);
   const [highestBidder, setHighestBidder] = useState("");
   const [ws, setWs] = useState();
+  const [timeLeft, setTimeLeft] = useState("");
 
   const getItemFromAuction = () => {
-    axios.get(`${Globalconfig.host}/getAuction`).then((res) => {
-      Globalconfig.setAuctionLists(res.data);
+    axios.post(`${Globalconfig.host}/getAuctionItem/${itemId}`).then((res) => {
+      setItem(res.data.item);
+      setTimeLeft(res.data.expiryTime);
     });
   };
 
   useEffect(() => {
     getItemFromAuction();
-    let listingIds = [];
-    Globalconfig.auctionLists.forEach((listing) => {
-      listingIds.push(listing[0]);
-    });
-    const url = `ws://localhost:8000/ws/auction/${listingIds[0]}/`;
+    const url = `ws://localhost:${Globalconfig.port}/ws/auction/${itemId}`;
     const ws = new WebSocket(url);
     setWs(ws);
     ws.onmessage = (e) => {
@@ -45,44 +49,43 @@ const Auction = () => {
         }
       }
     };
-    console.log(chatHistory);
     // eslint-disable-next-line
-  }, [chatHistory, highestBid, Globalconfig.setAuctionLists]);
+  }, [chatHistory, highestBid]);
 
   return (
-    <div id="auction_page">
-      {Globalconfig.auctionLists.map((listing) => {
-        return (
-          <div key={listing}>
-            <AuctionComp
-              highestBidder={highestBidder}
-              price={highestBid}
-              key={listing[0]}
-              chatHistory={chatHistory}
-              listing={listing}
-              sendMessage={(e) => {
-                let data = {
-                  messageType: "chat",
-                  message: e,
-                  listingId: listing[0],
-                  username: Globalconfig.username,
-                };
-                ws.send(JSON.stringify(data));
-              }}
-              placeBid={(e) => {
-                let data = {
-                  messageType: "bid",
-                  message: e,
-                  listingId: listing[0],
-                  username: Globalconfig.username,
-                };
-                ws.send(JSON.stringify(data));
-              }}
-            />
-          </div>
-        );
-      })}
-    </div>
+    <>
+      <Menu />
+      <div id="auction_page">
+        <div>
+          <AuctionComp
+            highestBidder={highestBidder}
+            price={highestBid}
+            key={item[0]}
+            chatHistory={chatHistory}
+            listing={item}
+            timeLeft={timeLeft}
+            sendMessage={(e) => {
+              let data = {
+                messageType: "chat",
+                message: e,
+                listingId: item[0],
+                username: Globalconfig.username,
+              };
+              ws.send(JSON.stringify(data));
+            }}
+            placeBid={(e) => {
+              let data = {
+                messageType: "bid",
+                message: e,
+                listingId: item[0],
+                username: Globalconfig.username,
+              };
+              ws.send(JSON.stringify(data));
+            }}
+          />
+        </div>
+      </div>
+    </>
   );
 };
 
