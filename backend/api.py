@@ -26,8 +26,8 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-global authtoken
-authtoken = ""
+global authToken
+authToken = ""
 
 
 @app.post("/createUser")
@@ -40,13 +40,13 @@ def createUser(userInformation: dict):
     salt = bcrypt.gensalt()
     utf = plainTextPassword.encode('utf-8')
     hashedPassword = bcrypt.hashpw(utf, salt)
-    authtoken = hashlib.sha256(helpers.generate_token().encode("utf-8")).hexdigest()
+    authToken = helpers.generate_token()
     db = dbmethods()
-    db.create_user(name, email, username, hashedPassword.decode(), authtoken)
+    db.create_user(name, email, username, hashedPassword.decode(), hashlib.sha256(authToken.encode("utf-8")).hexdigest())
     db.closeConnection()
     content = {"message": "User created successfully"}
     response = JSONResponse(content=content)
-    response.set_cookie(key="authtoken", value=authtoken, httponly=True,max_age=3600)
+    response.set_cookie(key="authToken", value=authToken, httponly=True,max_age=3600)
     return response
 
 
@@ -57,16 +57,14 @@ def verifyUser(userInformation: dict):
     db = dbmethods()
     user = db.verifyLogin(email)
     hashedPassword = user[0][4]
-    check = bcrypt.checkpw(plainTextPassword.encode(
-        'utf-8'), hashedPassword.encode('utf-8'))
+    check = bcrypt.checkpw(plainTextPassword.encode('utf-8'), hashedPassword.encode('utf-8'))
     if check:
-        authtoken = hashlib.sha256(helpers.generate_token().encode("utf-8")).hexdigest()
-        print(authtoken)
-        db.update_authToken(user[0][3],authtoken)
+        authToken = helpers.generate_token()
+        db.update_authToken(user[0][3],hashlib.sha256(authToken.encode("utf-8")).hexdigest())
         db.closeConnection()
         content = {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
         response = JSONResponse(content=content)
-        response.set_cookie(key="authtoken", value=authtoken, httponly=True, max_age=3600)
+        response.set_cookie(key="authToken", value=authToken, httponly=True, max_age=3600)
         return response
     else:
         db.closeConnection()
@@ -74,13 +72,22 @@ def verifyUser(userInformation: dict):
 
 
 @app.get("/verifyAuth")
-async def verifyAuth(authtoken: Union[str, None] = Cookie(default=None)):
-    print("reached")
+async def verifyAuth(authToken: Union[str, None] = Cookie(default=None)):
     db = dbmethods()
-    user = db.verifyAuth(authtoken)
+    user = db.verifyAuth(authToken)
     db.closeConnection()
-    print(user)
-    if len(user) > 1:
+    if hashlib.sha256(authToken.encode("utf-8")).hexdigest() == user[0][5]:
+        return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+    else:
+        return {"message": "User verification failed"}
+    
+@app.post("/verifyAuth1")
+def verifyAuth1(userInfo: dict):
+    authToken = userInfo["authToken"]
+    db = dbmethods()
+    user = db.verifyAuth(authToken)
+    db.closeConnection()
+    if hashlib.sha256(authToken.encode("utf-8")).hexdigest() == user[0][5]:
         return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
     else:
         return {"message": "User verification failed"}
