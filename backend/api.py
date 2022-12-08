@@ -130,7 +130,7 @@ def buyNow(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
-    db.checkout_singlex_item(username, itemId)
+    db.checkout_single_item(username, itemId)
     db.closeConnection()
 
 
@@ -151,6 +151,12 @@ def getListing(itemId: str):
         db.closeConnection()
         return item
 
+@app.get("/getUserPurchases/{username}")
+def getUserPurchases(username: str):
+    db = dbmethods()
+    purchases = db.get_user_purchases(username)
+    db.closeConnection()
+    return purchases
 # Websockets
 # From Fastapi documentation
 # https://fastapi.tiangolo.com/zh/advanced/websockets/

@@ -16,17 +16,25 @@ const UserProfile = () => {
   const navigate = useNavigate();
 
   const [listings, getListings] = React.useState([""]);
+  const [purchases, getUserPurchases] = React.useState([""]);
 
   const getListingsAxios = () => {
     axios.get(`${Globalconfig.host}/getListings/${Globalconfig.username}`).then((res) => {
       getListings(res.data);
     });
   };
+  const getUserPurchasesAxios = () => {
+    axios.get(`${Globalconfig.host}/getUserPurchases/${Globalconfig.username}`).then((res) => {
+      getUserPurchases(res.data);
+    });
+  };
 
   useEffect(() => {
     getListingsAxios();
+    getUserPurchasesAxios();
+    console.log(purchases);
     // eslint-disable-next-line
-  }, []);
+  },[]);
 
   return (
     <>
@@ -40,17 +48,27 @@ const UserProfile = () => {
               <h2>Your listings</h2>
               <hr />
             </div>
-            {listings.map((listing) => {
-              return (
-                <ListingsComponenet listing={listing}>
-                  {listing[9] === "true" ? (
-                    <div id="soldSign">
-                      <h1>SOLD</h1>
-                    </div>
-                  ) : null}
-                </ListingsComponenet>
-              );
-            })}
+            <div>
+              {listings.map((listing) => {
+                return (
+                  <ListingsComponenet listing={listing}>
+                    {listing[9] === "true" ? (
+                      <div id="soldSign">
+                        <h1>SOLD</h1>
+                      </div>
+                    ) : null}
+                  </ListingsComponenet>
+                );
+              })}
+              <hr></hr>
+              <h2>Your Purchases</h2>
+              <hr />
+              {purchases.map((purchase) => {
+                return (
+                  <ListingsComponenet listing={purchase}/>
+                );
+              })}
+            </div>
           </div>
         ) : (
           <div>
