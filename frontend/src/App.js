@@ -26,7 +26,7 @@ const App = () => {
             <Route exact path="/add_listing" element={<AddListing />} />
             <Route exact path="/profile" element={<UserProfile />} />
             <Route exact path="/cart" element={<ShoppingCart />} />
-            <Route exact path="/auction" element={<Auction />} />
+            <Route exact path="/auction/:itemId" element={<Auction />} />
           </Routes>
         </BrowserRouter>
       </GlobalContext>

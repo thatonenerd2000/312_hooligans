@@ -6,6 +6,7 @@ import bcrypt
 from dbmethods import dbmethods
 import helpers
 import json
+import datetime
 
 
 origins = [
@@ -157,6 +158,51 @@ def getUserPurchases(username: str):
     purchases = db.get_user_purchases(username)
     db.closeConnection()
     return purchases
+
+@app.post("/createAuction/{itemId}")
+def createAuction(itemId: str, auctionInformation: dict):
+    itemId = itemId
+    highestBid = auctionInformation["highestBid"]
+    highestBidder = auctionInformation["highestBidder"]
+    startTime = datetime.datetime.now()
+    auctionEndTime = startTime + datetime.timedelta(hours=2)
+    db = dbmethods()
+    db.addAuction(itemId, highestBid, highestBidder, auctionEndTime)
+    db.closeConnection()
+
+
+@app.post("/getAuctionItem/{itemId}")
+def getAuctionItem(itemId: str):
+    db = dbmethods()
+    item = db.get_item_from_id(itemId)
+    auction = db.getAuction()
+    expiryTime = ''
+    for every in auction:
+        if every[1] == itemId:
+            expiryTime = every[4]
+    db.closeConnection()
+    return {"item": item, "expiryTime": expiryTime}
+
+
+@app.get("/getAuction")
+def getAuction():
+    db = dbmethods()
+    auction = db.getAuction()
+    items = []
+    for every in auction:
+        itemId = every[1]
+        items += [db.get_item_from_id(itemId)]
+    db.closeConnection()
+    return items
+
+
+@app.post("/takeOffAuction/{itemId}")
+def endAuction(itemId: str, auctionInformation: dict):
+    db = dbmethods()
+    db.endAuction(itemId)
+    db.closeConnection()
+
+
 # Websockets
 # From Fastapi documentation
 # https://fastapi.tiangolo.com/zh/advanced/websockets/
@@ -164,33 +210,52 @@ def getUserPurchases(username: str):
 
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: List[WebSocket] = []
+        self.active_connections = {}
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket, auctionPage: str):
         await websocket.accept()
-        self.active_connections.append(websocket)
+        if auctionPage in self.active_connections:
+            self.active_connections[auctionPage] += [websocket]
+        else:
+            self.active_connections[auctionPage] = [websocket]
 
     def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+        for auctionPage in self.active_connections:
+            if websocket in self.active_connections[auctionPage]:
+                self.active_connections[auctionPage].remove(websocket)
 
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
-    async def broadcast(self, message: str):
-        for connection in self.active_connections:
+    async def broadcast(self, message: str, auctionPage: str):
+        # for connection in self.active_connections:
+        #     await connection.send_json(message)
+        for connection in self.active_connections[auctionPage]:
             await connection.send_json(message)
 
 
 manager = ConnectionManager()
 
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
+@app.websocket("/ws/auction/{auctionID}")
+async def websocket_endpoint(websocket: WebSocket, auctionID: str):
+    await manager.connect(websocket, auctionID)
     try:
         while True:
             data = await websocket.receive_text()
             data = json.loads(data)
-            await manager.broadcast(data)
+            await manager.broadcast(data, auctionID)
+
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+
+# async def websocket_endpoint(websocket: WebSocket):
+#     await manager.connect(websocket)
+#     try:
+#         while True:
+#             data = await websocket.receive_text()
+#             data = json.loads(data)
+#             await manager.broadcast(data)
+#     except WebSocketDisconnect:
+#         manager.disconnect(websocket)
