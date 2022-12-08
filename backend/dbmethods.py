@@ -26,6 +26,12 @@ class dbmethods:
         user = self.cur.fetchall()
         return user
 
+    def verifyAuth(self, authToken):
+        self.cur.execute(
+            '''SELECT * FROM users WHERE authToken = %s''', (authToken,))
+        user = self.cur.fetchall()
+        return user
+
     def update_authToken(self, username, authToken):
         self.cur.execute(
             '''UPDATE users SET authToken = %s WHERE username = %s''', (authToken, username,))

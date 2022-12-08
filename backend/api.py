@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Response
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Cookie
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import bcrypt
@@ -7,6 +7,7 @@ from dbmethods import dbmethods
 import helpers
 import json
 import hashlib
+from typing import Union
 
 
 origins = [
@@ -60,6 +61,7 @@ def verifyUser(userInformation: dict):
         'utf-8'), hashedPassword.encode('utf-8'))
     if check:
         authtoken = hashlib.sha256(helpers.generate_token().encode("utf-8")).hexdigest()
+        print(authtoken)
         db.update_authToken(user[0][3],authtoken)
         db.closeConnection()
         content = {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
@@ -69,6 +71,20 @@ def verifyUser(userInformation: dict):
     else:
         db.closeConnection()
         return {"message": "User verification failed"}
+
+
+@app.get("/verifyAuth")
+async def verifyAuth(authtoken: Union[str, None] = Cookie(default=None)):
+    print("reached")
+    db = dbmethods()
+    user = db.verifyAuth(authtoken)
+    db.closeConnection()
+    print(user)
+    if len(user) > 1:
+        return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+    else:
+        return {"message": "User verification failed"}
+
 
 @app.get("/getListings/{username}")
 def getListings(username: str):
