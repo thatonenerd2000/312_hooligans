@@ -73,6 +73,13 @@ const UserProfile = () => {
                 </ListingsComponenet>
               );
             })}
+            <hr></hr>
+              <h2>Purchased Items</h2>
+            <hr />
+            {purchases.map((listing) => {
+              return (<ListingsComponenet listing = {listing}></ListingsComponenet>);
+            })}
+
           </div>
         ) : (
           <div>
