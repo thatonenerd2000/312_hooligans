@@ -26,10 +26,23 @@ const UserProfile = () => {
     });
   };
 
+  const createAuction = (itemID) => {
+    axios.post(`${Globalconfig.host}/createAuction/${itemID}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      },
+      startingPrice: 0,
+      highestBid: 0,
+      highestBidder: "NULL",
+    });
+  };
+
   useEffect(() => {
     getListingsAxios();
     // eslint-disable-next-line
-  }, []);
+  }, [Globalconfig.auctionLists]);
 
   return (
     <>
@@ -45,14 +58,21 @@ const UserProfile = () => {
             </div>
             {listings.map((listing) => {
               return (
-                <ListingsComponenet listing={listing}>
+                <ListingsComponenet key={listing[0]} listing={listing}>
                   {listing[9] === "true" ? (
                     <div id="soldSign">
                       <h1>SOLD</h1>
                     </div>
                   ) : (
                     <>
-                      <button id="setAuction">
+                      <button
+                        onClick={(e) => {
+                          createAuction(listing[0]);
+                          Globalconfig.setAuctionLists((prev) => [...prev, listing]);
+                          navigate("/auction");
+                        }}
+                        id="setAuction"
+                      >
                         <h1>Set For Auction</h1>
                       </button>
                       <button id="deleteListing">

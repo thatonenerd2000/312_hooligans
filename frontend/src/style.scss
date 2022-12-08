@@ -103,6 +103,20 @@ html, h1, h2, h3, h4, h5, h6 {
     }
 }
 
+//Auction
+.auction_comp{
+    height: auto;
+    width: 60%;
+    background-color: white;
+    padding: 20px;
+    margin: 10px;
+    border-radius:2%;
+    display: inline-block;
+    font-family: 'Nunito Sans', sans-serif;
+    transition: 0.1s ease-in-out;
+    animation: fadeIn 0.5s ease-in-out; 
+}
+
 //Logo
 .Logo{
     height:inherit;
@@ -272,6 +286,25 @@ html, h1, h2, h3, h4, h5, h6 {
 
 #shopping_cart h1, h2{
     color: white;
+}
+
+//Auction page
+#auction_page{
+    width: 100vw;
+    min-height: 100vh;
+    max-height: fit-content;
+    background-color: #0C2D48;
+    background-size: cover;
+    text-align: center;
+}
+
+.chatBox{
+    height:500px;
+    width: 400px;
+    background-color: rgb(190, 186, 186);
+    overflow-y:scroll;
+    border-radius: 10px;
+    text-align: left;
 }
 
 // Animations
