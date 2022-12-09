@@ -18,6 +18,8 @@ const AuctionComp = (props) => {
           </h3>
           <p>by {props.highestBidder}</p>
           <br />
+          <p>Time Left: {props.timeLeft}</p>
+          <br />
           <input
             type="number"
             style={{ width: "300px" }}

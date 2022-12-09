@@ -14,25 +14,27 @@ const Login = (props) => {
   const verifyUser = (email, password) => {
     let username = email.split("@")[0];
     axios
-      .post(`${Globalconfig.host}/verifyUser`, {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      .post(
+        `${Globalconfig.host}/verifyUser`,
+        {
+          headers: {
+            mode: "no-cors",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+          },
+          email: username,
+          password: password,
         },
-        email: username,
-        password: password,
-      },
-          {withCredentials:true}
+        { withCredentials: true }
       )
       .then((res) => {
         if (res.data.message === "User verified successfully") {
+          Globalconfig.setName(res.data.name);
           Globalconfig.setUsername(res.data.username);
           Globalconfig.setUserEmail(res.data.email);
-          Globalconfig.setName(res.data.name);
           navigate("/listings");
-        } else {
-          alert("Incorrect email or password");
         }
       });
   };

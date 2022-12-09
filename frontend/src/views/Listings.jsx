@@ -57,74 +57,82 @@ const Listing = () => {
     });
   };
 
+  const getAuctions = () => {
+    axios.get(`${Globalconfig.host}/getAuction`).then((res) => {
+      Globalconfig.setAuctionLists(res.data);
+    });
+  };
+
   useEffect(() => {
     verifyToken();
     getListingsFromDB();
+    getAuctions();
     // eslint-disable-next-line
-  }, []);
+  }, [Globalconfig.username, Globalconfig.name, Globalconfig.email]);
 
   return (
     <>
       <Menu />
       <div className="listings_page">
+        <h1 className="headers">Listings</h1>
+        <hr />
         {listings.map((listing) => {
           if (listing[9] !== "true") {
             return (
-              <ListingsComponenet key={listing[0]} listing={listing}>
-                {Globalconfig.name !== "" ? (
-                  <div>
+              <>
+                <ListingsComponenet key={listing[0]} listing={listing} price="">
+                  {Globalconfig.name !== "" ? (
+                    <div>
+                      <button
+                        onClick={(e) => {
+                          addToCart(listing[0], Globalconfig.username);
+                        }}
+                      >
+                        Add to cart
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          buyNow(listing[0], Globalconfig.username);
+                        }}
+                      >
+                        Buy Now!
+                      </button>
+                    </div>
+                  ) : (
                     <button
                       onClick={(e) => {
-                        addToCart(listing[0], Globalconfig.username);
+                        navigate("/");
                       }}
                     >
-                      Add to cart
+                      Sign in to buy
                     </button>
-                    <button
-                      onClick={(e) => {
-                        buyNow(listing[0], Globalconfig.username);
-                      }}
-                    >
-                      Buy Now!
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={(e) => {
-                      navigate("/");
-                    }}
-                  >
-                    Sign in to buy
-                  </button>
-                )}
-              </ListingsComponenet>
+                  )}
+                </ListingsComponenet>
+              </>
             );
           } else {
             return null;
           }
         })}
-        <button onClick={(e) => navigate("/cart")}>Shopping Cart</button>
-        <button
-          onClick={() => {
-            navigate("/add_listing");
-          }}
-        >
-          Add listings
-        </button>
-        <button
-          onClick={() => {
-            navigate("/auction");
-          }}
-        >
-          Auctions
-        </button>
-        <button
-          onClick={(e) => {
-            navigate("/profile");
-          }}
-        >
-          Your profile
-        </button>
+        <br />
+        <br />
+        <hr />
+        <h1 className="headers">Current Auctions</h1>
+        <hr />
+        {Globalconfig.auctionLists.map((auction) => {
+          return (
+            <ListingsComponenet key={auction[0]} listing={auction} price="Auctin is LIVE! $">
+              <button
+                onClick={(e) => {
+                  navigate(`/auction/${auction[0]}`);
+                }}
+                id="setAuction"
+              >
+                <h1>Go to Auction</h1>
+              </button>
+            </ListingsComponenet>
+          );
+        })}
       </div>
     </>
   );

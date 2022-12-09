@@ -31,7 +31,7 @@ const Landing = () => {
   useEffect(() => {
     verifyToken();
     // eslint-disable-next-line
-  }, [logDisplay]);
+  }, [logDisplay, Globalconfig.username, Globalconfig.name, Globalconfig.email]);
 
   return (
     <>

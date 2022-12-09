@@ -12,8 +12,11 @@ import datetime
 
 
 origins = [
-    # NEED TO MODIFY THIS **SECURITY ISSUE**
-    "*"
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:8080",
+    "http://localhost:3001",
 ]
 
 app = FastAPI()
@@ -22,9 +25,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    # NEED TO MODIFY THIS **SECURITY ISSUE**
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
+
 )
 
 global authToken
@@ -72,6 +75,7 @@ def verifyUser(userInformation: dict):
         response = JSONResponse(content=content)
         response.set_cookie(key="authToken", value=authToken,
                             httponly=True, max_age=3600)
+        db.closeConnection()
         return response
     else:
         db.closeConnection()
@@ -82,7 +86,8 @@ def verifyUser(userInformation: dict):
 async def verifyAuth(authToken: Union[str, None] = Cookie(default=None)):
     if authToken != None:
         db = dbmethods()
-        user = db.verifyAuth(hashlib.sha256(authToken.encode("utf-8")).hexdigest())
+        user = db.verifyAuth(hashlib.sha256(
+            authToken.encode("utf-8")).hexdigest())
         db.closeConnection()
         if len(user) == 1:
             return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
@@ -192,7 +197,7 @@ def createAuction(itemId: str, auctionInformation: dict):
     highestBid = auctionInformation["highestBid"]
     highestBidder = auctionInformation["highestBidder"]
     startTime = datetime.datetime.now()
-    auctionEndTime = startTime + datetime.timedelta(hours=2)
+    auctionEndTime = startTime + datetime.timedelta(minutes=2)
     db = dbmethods()
     db.addAuction(itemId, highestBid, highestBidder, auctionEndTime)
     db.closeConnection()
@@ -221,6 +226,26 @@ def getAuction():
         items += [db.get_item_from_id(itemId)]
     db.closeConnection()
     return items
+
+
+@app.get("/getAuctionItem/{itemId}")
+def getAuctionItem(itemId: str):
+    db = dbmethods()
+    item = db.getAuctionInfo(itemId)
+    db.closeConnection()
+    return item
+
+
+@app.post("/updateAuction/{itemId}")
+def updateAuction(itemId: str, auctionInformation: dict):
+    db = dbmethods()
+    itemPrevState = db.getAuctionInfo(itemId)
+    previousHighestBid = itemPrevState[2]
+    newHighestBid = auctionInformation["currentBid"]
+    newHighestBidder = auctionInformation["currentBidder"]
+    if newHighestBid > previousHighestBid:
+        db.updateAuction(itemId, newHighestBid, newHighestBidder)
+    db.closeConnection()
 
 
 @app.post("/takeOffAuction/{itemId}")

@@ -20,12 +20,12 @@ const Auction = () => {
   const [highestBid, setHighestBid] = useState(0);
   const [highestBidder, setHighestBidder] = useState("");
   const [ws, setWs] = useState();
-  const [timeLeft, setTimeLeft] = useState("");
+  const [NewTime, setNewTime] = useState("");
+  const [timeLeftDiff, setTimeLeft] = useState("");
 
   const getItemFromAuction = () => {
     axios.post(`${Globalconfig.host}/getAuctionItem/${itemId}`).then((res) => {
       setItem(res.data.item);
-      setTimeLeft(res.data.expiryTime);
     });
   };
 
@@ -39,9 +39,40 @@ const Auction = () => {
     });
   };
 
+  const getBidInfo = (itemId) => {
+    axios.get(`${Globalconfig.host}/getAuctionItem/${itemId}`).then((res) => {
+      setHighestBid(res.data[2]);
+      setHighestBidder(res.data[3]);
+      setNewTime(res.data[4]);
+    });
+  };
+
+  const updateBidInfo = (itemId, currentBid, currentBidder) => {
+    axios.post(`${Globalconfig.host}/updateAuction/${itemId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": true,
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      },
+      currentBid: currentBid,
+      currentBidder: currentBidder,
+    });
+  };
+
+  const timeLeft = (timeFuture) => {
+    const timeNow = new Date();
+    const timeFutureDate = new Date(timeFuture);
+    const timeLeft = timeFutureDate - timeNow;
+    const minutes = Math.floor(timeLeft / (1000 * 60));
+    setTimeLeft(`${minutes}m`);
+  };
+
   useEffect(() => {
     verifyToken();
-    const url = `ws://localhost:${Globalconfig.port}/ws`;
+    getBidInfo(itemId);
+    timeLeft(NewTime);
+    const url = `ws://localhost:${Globalconfig.port}/ws/auction/${itemId}`;
     getItemFromAuction();
     const ws = new WebSocket(url);
     setWs(ws);
@@ -54,14 +85,12 @@ const Auction = () => {
           setChatHistory([...chatHistory, WSmessage]);
         }
       } else if (WSmessage.messageType === "bid") {
-        if (parseInt(WSmessage.message) > parseInt(highestBid)) {
-          setHighestBidder(WSmessage.username);
-          setHighestBid(WSmessage.message);
-        }
+        setHighestBidder(WSmessage.username);
+        setHighestBid(WSmessage.message);
       }
     };
     // eslint-disable-next-line
-  }, [chatHistory, highestBid]);
+  }, [chatHistory, highestBid, Globalconfig.username, Globalconfig.name, Globalconfig.email, NewTime]);
 
   return (
     <>
@@ -74,7 +103,7 @@ const Auction = () => {
             key={item[0]}
             chatHistory={chatHistory}
             listing={item}
-            timeLeft={timeLeft}
+            timeLeft={timeLeftDiff}
             sendMessage={(e) => {
               let data = {
                 messageType: "chat",
@@ -92,6 +121,7 @@ const Auction = () => {
                 username: Globalconfig.username,
               };
               ws.send(JSON.stringify(data));
+              updateBidInfo(itemId, e, Globalconfig.username);
             }}
           />
         </div>

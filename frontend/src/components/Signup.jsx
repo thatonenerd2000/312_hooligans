@@ -17,6 +17,7 @@ const Signup = (props) => {
         {
           headers: {
             "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": true,
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
           },
@@ -26,9 +27,7 @@ const Signup = (props) => {
         },
         { withCredentials: true }
       )
-
       .then((res) => {
-        console.log(res);
         if (res.data.message === "User created successfully") {
           Globalconfig.setUsername(email.split("@")[0]);
           Globalconfig.setUserEmail(email);

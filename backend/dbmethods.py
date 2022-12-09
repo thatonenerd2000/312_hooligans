@@ -165,6 +165,22 @@ class dbmethods:
         auctions = self.cur.fetchall()
         return auctions
 
+    def getAuctionInfo(self, itemID):
+        self.cur.execute(
+            '''CREATE TABLE IF NOT EXISTS auctions (id SERIAL PRIMARY KEY, itemID VARCHAR(255), highestBid VARCHAR(255), highestBidder VARCHAR(255), auctionEnd VARCHAR(255))''')
+        self.cur.execute(
+            '''SELECT * FROM auctions WHERE itemID = %s''', (itemID))
+        auction = self.cur.fetchone()
+        return auction
+
+    def updateAuction(self, itemID, highestBid, highestBidder):
+        self.cur.execute(
+            '''CREATE TABLE IF NOT EXISTS auctions (id SERIAL PRIMARY KEY, itemID VARCHAR(255), highestBid VARCHAR(255), highestBidder VARCHAR(255), auctionEnd VARCHAR(255))''')
+        self.cur.execute(
+            """UPDATE auctions SET highestBid = %s, highestBidder = %s WHERE itemID = %s""", (
+                highestBid, highestBidder, itemID))
+        self.connection.commit()
+
     def endAuction(self, itemID):
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS auctions (id SERIAL PRIMARY KEY, itemID VARCHAR(255), highestBid VARCHAR(255), highestBidder VARCHAR(255), auctionEnd VARCHAR(255))''')

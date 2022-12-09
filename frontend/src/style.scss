@@ -7,6 +7,14 @@ html, h1, h2, h3, h4, h5, h6 {
 
 }
 
+.headers{
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 200;
+    font-size: 2em;
+    text-align: center;
+    color:white;
+}
+
 // Components
 .MenuButton{
     height: 60px;
@@ -256,6 +264,7 @@ html, h1, h2, h3, h4, h5, h6 {
     background-color: #0C2D48;
     background-size: cover;
     text-align: center;
+    font-family: 'Nunito Sans', sans-serif;
 }
 
 // Profile
@@ -282,10 +291,6 @@ html, h1, h2, h3, h4, h5, h6 {
     background-size: cover;
     text-align: center;
     font-family: 'Nunito Sans', sans-serif;
-}
-
-#shopping_cart h1, h2{
-    color: white;
 }
 
 //Auction page

@@ -53,7 +53,7 @@ const UserProfile = () => {
     verifyToken();
     getListingsAxios();
     // eslint-disable-next-line
-  }, [Globalconfig.auctionLists]);
+  }, [Globalconfig.auctionLists, Globalconfig.username, Globalconfig.name, Globalconfig.email]);
 
   return (
     <>
@@ -69,7 +69,7 @@ const UserProfile = () => {
             </div>
             {listings.map((listing) => {
               return (
-                <ListingsComponenet key={listing[0]} listing={listing}>
+                <ListingsComponenet key={listing[0]} listing={listing} price="">
                   {listing[9] === "true" ? (
                     <div id="soldSign">
                       <h1>SOLD</h1>

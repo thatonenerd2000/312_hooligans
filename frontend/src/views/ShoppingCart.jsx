@@ -56,35 +56,38 @@ const ShoppingCart = () => {
   const checkoutAll = () => {
     axios.post(`${Globalconfig.host}/checkoutCart`, {
       headers: {
-        "Content-Type" : "text/plain",
+        "Content-Type": "text/plain",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
       },
-      username : Globalconfig.username
+      username: Globalconfig.username,
     });
-  }
+  };
 
   useEffect(() => {
     verifyToken();
     getCartIds();
     // eslint-disable-next-line
-  }, []);
+  }, [Globalconfig.username, Globalconfig.name, Globalconfig.email]);
 
   return (
     <div id="shopping_cart">
       <Menu />
-      <h1>Your Cart</h1>
+      <h1 className="headers">Your Cart</h1>
       <hr />
       {cartItems.map((item) => {
-        return (<ListingsComponenet key={item[0]} listing={item}> 
-        <button
-          onClick={(e) => {
-            removeItem(item[0], Globalconfig.username);
-            }}
+        return (
+          <ListingsComponenet key={item[0]} listing={item} price="">
+            <button
+              onClick={(e) => {
+                removeItem(item[0], Globalconfig.username);
+                window.location.reload();
+              }}
             >
               Remove From Cart
-              </button>
-        </ListingsComponenet>);
+            </button>
+          </ListingsComponenet>
+        );
       })}
       <button
         onClick={(e) => {
@@ -94,9 +97,9 @@ const ShoppingCart = () => {
         Back to Listings
       </button>
       <button
-      onClick={(e) => {
-        checkoutAll(Globalconfig.username)
-      }}
+        onClick={(e) => {
+          checkoutAll(Globalconfig.username);
+        }}
       >
         Checkout Cart!
       </button>

@@ -23,7 +23,7 @@ const Add_listing = () => {
   useEffect(() => {
     verifyToken();
     // eslint-disable-next-line
-  }, []);
+  }, [Globalconfig.username, Globalconfig.name, Globalconfig.email]);
 
   return (
     <div className="add_listing">

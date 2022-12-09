@@ -13,7 +13,7 @@ const ListingsComponenet = (props) => {
           <p>Category: {props.listing[4]}</p>
           <p>{props.listing[5]}</p>
           <p>
-            <strong>Price:</strong> ${props.listing[6]}
+            <strong>Price:</strong> $ {props.price === "" ? props.listing[6] : props.price}
           </p>
           <p>
             <strong>Location:</strong> {props.listing[7]}
