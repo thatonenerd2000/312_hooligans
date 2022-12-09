@@ -43,7 +43,6 @@ const Auction = () => {
     verifyToken();
     const url = `ws://localhost:${Globalconfig.port}/ws`;
     getItemFromAuction();
-    const url = `ws://localhost:${Globalconfig.port}/ws/auction/${itemId}`;
     const ws = new WebSocket(url);
     setWs(ws);
     ws.onmessage = (e) => {
