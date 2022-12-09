@@ -22,7 +22,9 @@ const Login = (props) => {
         },
         email: username,
         password: password,
-      })
+      },
+          {withCredentials:true}
+      )
       .then((res) => {
         if (res.data.message === "User verified successfully") {
           Globalconfig.setUsername(res.data.username);

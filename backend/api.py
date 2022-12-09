@@ -1,11 +1,13 @@
 from typing import List
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Cookie, Header
 from fastapi.middleware.cors import CORSMiddleware
-import helpers
+from fastapi.responses import JSONResponse
 import bcrypt
 from dbmethods import dbmethods
 import helpers
 import json
+import hashlib
+from typing import Union
 import datetime
 
 
@@ -25,6 +27,9 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+global authToken
+authToken = ""
+
 
 @app.post("/createUser")
 def createUser(userInformation: dict):
@@ -36,11 +41,16 @@ def createUser(userInformation: dict):
     salt = bcrypt.gensalt()
     utf = plainTextPassword.encode('utf-8')
     hashedPassword = bcrypt.hashpw(utf, salt)
-
+    authToken = helpers.generate_token()
     db = dbmethods()
-    db.create_user(name, email, username, hashedPassword.decode(), "NULL")
+    db.create_user(name, email, username, hashedPassword.decode(),
+                   hashlib.sha256(authToken.encode("utf-8")).hexdigest())
     db.closeConnection()
-    return {"message": "User created successfully"}
+    content = {"message": "User created successfully"}
+    response = JSONResponse(content=content)
+    response.set_cookie(key="authToken", value=authToken,
+                        httponly=True, max_age=3600)
+    return response
 
 
 @app.post("/verifyUser")
@@ -50,11 +60,34 @@ def verifyUser(userInformation: dict):
     db = dbmethods()
     user = db.verifyLogin(email)
     hashedPassword = user[0][4]
-    db.closeConnection()
     check = bcrypt.checkpw(plainTextPassword.encode(
         'utf-8'), hashedPassword.encode('utf-8'))
     if check:
-        return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+        authToken = helpers.generate_token()
+        db.update_authToken(user[0][3], hashlib.sha256(
+            authToken.encode("utf-8")).hexdigest())
+        db.closeConnection()
+        content = {"message": "User verified successfully",
+                   "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+        response = JSONResponse(content=content)
+        response.set_cookie(key="authToken", value=authToken,
+                            httponly=True, max_age=3600)
+        return response
+    else:
+        db.closeConnection()
+        return {"message": "User verification failed"}
+
+
+@app.get("/verifyAuth")
+async def verifyAuth(authToken: Union[str, None] = Cookie(default=None)):
+    if authToken != None:
+        db = dbmethods()
+        user = db.verifyAuth(hashlib.sha256(authToken.encode("utf-8")).hexdigest())
+        db.closeConnection()
+        if len(user) == 1:
+            return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+        else:
+            return {"message": "User verification failed"}
     else:
         return {"message": "User verification failed"}
 
