@@ -8,6 +8,7 @@ import helpers
 import json
 import hashlib
 from typing import Union
+import datetime
 
 
 origins = [
@@ -127,7 +128,7 @@ def addListing(listingInformation: dict):
     image = listingInformation["image"]
     db = dbmethods()
     db.add_listing(name, username, item_name, item_type,
-                   description, price, location, image, "NULL", "NULL")
+                   description, price, location, image, "false", "NULL")
     db.closeConnection()
     return {"message": "Listing added successfully"}
 
@@ -150,15 +151,16 @@ def getUserCart(username: str):
     return cart
 
 
-@app.post("/checkoutCart/{username}")
-def checkoutCart(username: str):
+@app.post("/checkoutCart")
+def checkoutCart(username: dict):
+    username = username["username"]
     db = dbmethods()
     cart = db.checkout_entire_cart(username)
     db.closeConnection()
 
 
-@app.post("/buyOne/{username}")
-def buyOne(checkoutInformation):
+@app.post("/buyNow")
+def buyNow(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
@@ -166,8 +168,8 @@ def buyOne(checkoutInformation):
     db.closeConnection()
 
 
-@app.post("/removeOne/{username}")
-def removeOne(checkoutInformation):
+@app.post("/removeOne")
+def removeOne(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
@@ -183,6 +185,51 @@ def getListing(itemId: str):
         db.closeConnection()
         return item
 
+
+@app.post("/createAuction/{itemId}")
+def createAuction(itemId: str, auctionInformation: dict):
+    itemId = itemId
+    highestBid = auctionInformation["highestBid"]
+    highestBidder = auctionInformation["highestBidder"]
+    startTime = datetime.datetime.now()
+    auctionEndTime = startTime + datetime.timedelta(hours=2)
+    db = dbmethods()
+    db.addAuction(itemId, highestBid, highestBidder, auctionEndTime)
+    db.closeConnection()
+
+
+@app.post("/getAuctionItem/{itemId}")
+def getAuctionItem(itemId: str):
+    db = dbmethods()
+    item = db.get_item_from_id(itemId)
+    auction = db.getAuction()
+    expiryTime = ''
+    for every in auction:
+        if every[1] == itemId:
+            expiryTime = every[4]
+    db.closeConnection()
+    return {"item": item, "expiryTime": expiryTime}
+
+
+@app.get("/getAuction")
+def getAuction():
+    db = dbmethods()
+    auction = db.getAuction()
+    items = []
+    for every in auction:
+        itemId = every[1]
+        items += [db.get_item_from_id(itemId)]
+    db.closeConnection()
+    return items
+
+
+@app.post("/takeOffAuction/{itemId}")
+def endAuction(itemId: str, auctionInformation: dict):
+    db = dbmethods()
+    db.endAuction(itemId)
+    db.closeConnection()
+
+
 # Websockets
 # From Fastapi documentation
 # https://fastapi.tiangolo.com/zh/advanced/websockets/
@@ -190,33 +237,52 @@ def getListing(itemId: str):
 
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: List[WebSocket] = []
+        self.active_connections = {}
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket, auctionPage: str):
         await websocket.accept()
-        self.active_connections.append(websocket)
+        if auctionPage in self.active_connections:
+            self.active_connections[auctionPage] += [websocket]
+        else:
+            self.active_connections[auctionPage] = [websocket]
 
     def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+        for auctionPage in self.active_connections:
+            if websocket in self.active_connections[auctionPage]:
+                self.active_connections[auctionPage].remove(websocket)
 
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
-    async def broadcast(self, message: str):
-        for connection in self.active_connections:
+    async def broadcast(self, message: str, auctionPage: str):
+        # for connection in self.active_connections:
+        #     await connection.send_json(message)
+        for connection in self.active_connections[auctionPage]:
             await connection.send_json(message)
 
 
 manager = ConnectionManager()
 
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
+@app.websocket("/ws/auction/{auctionID}")
+async def websocket_endpoint(websocket: WebSocket, auctionID: str):
+    await manager.connect(websocket, auctionID)
     try:
         while True:
             data = await websocket.receive_text()
             data = json.loads(data)
-            await manager.broadcast(data)
+            await manager.broadcast(data, auctionID)
+
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+
+# async def websocket_endpoint(websocket: WebSocket):
+#     await manager.connect(websocket)
+#     try:
+#         while True:
+#             data = await websocket.receive_text()
+#             data = json.loads(data)
+#             await manager.broadcast(data)
+#     except WebSocketDisconnect:
+#         manager.disconnect(websocket)

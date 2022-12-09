@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 //Components
 import ListingsComponenet from "../components/ListingsComponenet";
+import Menu from "../components/Menu.jsx";
 
 const ShoppingCart = () => {
   const Globalconfig = useContext(ConfigContext);
@@ -41,6 +42,27 @@ const ShoppingCart = () => {
       });
     });
   };
+  const removeItem = (itemId, buyerUsername) => {
+    axios.post(`${Globalconfig.host}/removeOne`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      },
+      itemId: itemId,
+      buyerUsername: buyerUsername,
+    });
+  };
+  const checkoutAll = () => {
+    axios.post(`${Globalconfig.host}/checkoutCart`, {
+      headers: {
+        "Content-Type" : "text/plain",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+      },
+      username : Globalconfig.username
+    });
+  }
 
   useEffect(() => {
     verifyToken();
@@ -49,11 +71,20 @@ const ShoppingCart = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Shopping Cart</h1>
+    <div id="shopping_cart">
+      <Menu />
+      <h1>Your Cart</h1>
       <hr />
       {cartItems.map((item) => {
-        return <ListingsComponenet key={item[0]} listing={item} />;
+        return (<ListingsComponenet key={item[0]} listing={item}> 
+        <button
+          onClick={(e) => {
+            removeItem(item[0], Globalconfig.username);
+            }}
+            >
+              Remove From Cart
+              </button>
+        </ListingsComponenet>);
       })}
       <button
         onClick={(e) => {
@@ -61,6 +92,13 @@ const ShoppingCart = () => {
         }}
       >
         Back to Listings
+      </button>
+      <button
+      onClick={(e) => {
+        checkoutAll(Globalconfig.username)
+      }}
+      >
+        Checkout Cart!
       </button>
     </div>
   );
