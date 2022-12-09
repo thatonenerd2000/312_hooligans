@@ -54,7 +54,7 @@ def createUser(userInformation: dict):
     hashedPassword = bcrypt.hashpw(utf, salt)
     authToken = helpers.generate_token()
     db = dbmethods()
-    db.create_user(name, email, username, hashedPassword.decode(),
+    db.create_user(helpers.escape_sql(name), helpers.escape_sql(email), helpers.escape_sql(username), helpers.escape_sql(hashedPassword.decode()),
                    hashlib.sha256(authToken.encode("utf-8")).hexdigest())
     db.closeConnection()
     content = {"message": "User created successfully"}
@@ -69,13 +69,13 @@ def verifyUser(userInformation: dict):
     email = userInformation['email']
     plainTextPassword = userInformation['password']
     db = dbmethods()
-    user = db.verifyLogin(email)
+    user = db.verifyLogin(helpers.escape_sql(email))
     hashedPassword = user[0][4]
     check = bcrypt.checkpw(plainTextPassword.encode(
         'utf-8'), hashedPassword.encode('utf-8'))
     if check:
         authToken = helpers.generate_token()
-        db.update_authToken(user[0][3], hashlib.sha256(
+        db.update_authToken(helpers.escape_sql(user[0][3]), hashlib.sha256(
             authToken.encode("utf-8")).hexdigest())
         db.closeConnection()
         content = {"message": "User verified successfully",
@@ -108,7 +108,7 @@ async def verifyAuth(authToken: Union[str, None] = Cookie(default=None)):
 @app.get("/getListings/{username}")
 def getListings(username: str):
     db = dbmethods()
-    listings = db.get_listings(username)
+    listings = db.get_listings(helpers.escape_sql(username))
     db.closeConnection()
     return listings
 
@@ -140,8 +140,8 @@ def addListing(listingInformation: dict):
     location = listingInformation["location"]
     image = listingInformation["image"]
     db = dbmethods()
-    db.add_listing(name, username, item_name, item_type,
-                   description, price, location, image, "false", "NULL")
+    db.add_listing(helpers.escape_sql(name), helpers.escape_sql(username), helpers.escape_sql(item_name), helpers.escape_sql(item_type),
+                   helpers.escape_sql(description), helpers.escape_sql(price), helpers.escape_sql(location), image, "false", "NULL")
     db.closeConnection()
     return {"message": "Listing added successfully"}
 
@@ -151,7 +151,7 @@ def addToCart(cartInformation: dict):
     buyer = cartInformation["buyerUsername"]
     itemId = cartInformation["itemId"]
     db = dbmethods()
-    db.add_to_cart(buyer, itemId)
+    db.add_to_cart(helpers.escape_sql(buyer), helpers.escape_sql(itemId))
     db.closeConnection()
     return {"message": buyer + " bought a thing!"}
 
@@ -159,7 +159,7 @@ def addToCart(cartInformation: dict):
 @app.get("/getCart/{username}")
 def getUserCart(username: str):
     db = dbmethods()
-    cart = db.get_user_cart(username)
+    cart = db.get_user_cart(helpers.escape_sql(username))
     db.closeConnection()
     return cart
 
@@ -177,7 +177,7 @@ def buyNow(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
-    db.checkout_singlex_item(username, itemId)
+    db.checkout_singlex_item(helpers.escape_sql(username), helpers.escape_sql(itemId))
     db.closeConnection()
 
 
@@ -186,7 +186,7 @@ def removeOne(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
-    db.remove_item_from_cart(username, itemId)
+    db.remove_item_from_cart(helpers.escape_sql(username), helpers.escape_sql(itemId))
     db.closeConnection()
 
 
@@ -194,7 +194,7 @@ def removeOne(checkoutInformation: dict):
 def getListing(itemId: str):
     if itemId != "undefined":
         db = dbmethods()
-        item = db.get_item_from_id(itemId)
+        item = db.get_item_from_id(helpers.escape_sql(itemId))
         db.closeConnection()
         return item
 
@@ -207,14 +207,14 @@ def createAuction(itemId: str, auctionInformation: dict):
     startTime = datetime.datetime.now()
     auctionEndTime = startTime + datetime.timedelta(minutes=2)
     db = dbmethods()
-    db.addAuction(itemId, highestBid, highestBidder, auctionEndTime)
+    db.addAuction(helpers.escape_sql(itemId), helpers.escape_sql(highestBid), helpers.escape_sql(highestBidder), helpers.escape_sql(auctionEndTime))
     db.closeConnection()
 
 
 @app.post("/getAuctionItem/{itemId}")
 def getAuctionItem(itemId: str):
     db = dbmethods()
-    item = db.get_item_from_id(itemId)
+    item = db.get_item_from_id(helpers.escape_sql(itemId))
     auction = db.getAuction()
     expiryTime = ''
     for every in auction:
@@ -231,7 +231,7 @@ def getAuction():
     items = []
     for every in auction:
         itemId = every[1]
-        items += [db.get_item_from_id(itemId)]
+        items += [db.get_item_from_id(helpers.escape_sql(itemId))]
     db.closeConnection()
     return items
 
@@ -239,7 +239,7 @@ def getAuction():
 @app.get("/getAuctionItem/{itemId}")
 def getAuctionItem(itemId: str):
     db = dbmethods()
-    item = db.getAuctionInfo(itemId)
+    item = db.getAuctionInfo(helpers.escape_sql(itemId))
     db.closeConnection()
     return item
 
@@ -247,19 +247,19 @@ def getAuctionItem(itemId: str):
 @app.post("/updateAuction/{itemId}")
 def updateAuction(itemId: str, auctionInformation: dict):
     db = dbmethods()
-    itemPrevState = db.getAuctionInfo(itemId)
+    itemPrevState = db.getAuctionInfo(helpers.escape_sql(itemId))
     previousHighestBid = itemPrevState[2]
     newHighestBid = auctionInformation["currentBid"]
     newHighestBidder = auctionInformation["currentBidder"]
     if newHighestBid > previousHighestBid:
-        db.updateAuction(itemId, newHighestBid, newHighestBidder)
+        db.updateAuction(helpers.escape_sql(itemId), helpers.escape_sql(newHighestBid), helpers.escape_sql(newHighestBidder))
     db.closeConnection()
 
 
 @app.post("/takeOffAuction/{itemId}")
 def endAuction(itemId: str, auctionInformation: dict):
     db = dbmethods()
-    db.endAuction(itemId)
+    db.endAuction(helpers.escape_sql(itemId))
     db.closeConnection()
 
 
@@ -295,7 +295,6 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
-
 
 @app.websocket("/ws/auction/{auctionID}")
 async def websocket_endpoint(websocket: WebSocket, auctionID: str):
