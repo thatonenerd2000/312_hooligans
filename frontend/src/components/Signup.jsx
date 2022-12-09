@@ -12,18 +12,23 @@ const Signup = (props) => {
 
   const createUser = (name, email, password) => {
     axios
-      .post(`${Globalconfig.host}/createUser`, {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      .post(
+        `${Globalconfig.host}/createUser`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+          },
+          name: name,
+          email: email,
+          password: password,
         },
-        name: name,
-        email: email,
-        password: password,
-      })
+        { withCredentials: true }
+      )
 
       .then((res) => {
+        console.log(res);
         if (res.data.message === "User created successfully") {
           Globalconfig.setUsername(email.split("@")[0]);
           Globalconfig.setUserEmail(email);

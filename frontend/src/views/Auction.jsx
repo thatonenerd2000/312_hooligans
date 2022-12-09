@@ -29,9 +29,20 @@ const Auction = () => {
     });
   };
 
+  const verifyToken = () => {
+    axios.get(`${Globalconfig.host}/verifyAuth`, { withCredentials: true }).then((res) => {
+      if (res.data.message === "User verified successfully") {
+        Globalconfig.setName(res.data.name);
+        Globalconfig.setUsername(res.data.username);
+        Globalconfig.setUserEmail(res.data.email);
+      }
+    });
+  };
+
   useEffect(() => {
+    verifyToken();
+    const url = `ws://localhost:${Globalconfig.port}/ws`;
     getItemFromAuction();
-    const url = `ws://localhost:${Globalconfig.port}/ws/auction/${itemId}`;
     const ws = new WebSocket(url);
     setWs(ws);
     ws.onmessage = (e) => {

@@ -4,12 +4,12 @@ import psycopg2
 class dbmethods:
     def __init__(self):
         # Comment the lines below if not using docker eg dev environment
-        self.connection = psycopg2.connect(
-            database="cse312_project", user="root", password="", host="localhost", port="5432")
+        # self.connection = psycopg2.connect(
+        #     database="cse312_project", user="root", password="", host="localhost", port="5432")
 
         # Comment the line below if using docker eg prod environment
-        # self.connection = psycopg2.connect(
-        #     database="cse312_project", user="root", password="password", host="postgres", port="5432")
+        self.connection = psycopg2.connect(
+            database="cse312_project", user="root", password="password", host="postgres", port="5432")
 
         self.cur = self.connection.cursor()
 
@@ -25,6 +25,17 @@ class dbmethods:
             '''SELECT * FROM users WHERE username = %s''', (username,))
         user = self.cur.fetchall()
         return user
+
+    def verifyAuth(self, authToken):
+        self.cur.execute(
+            '''SELECT * FROM users WHERE authToken = %s''', (authToken,))
+        user = self.cur.fetchall()
+        return user
+
+    def update_authToken(self, username, authToken):
+        self.cur.execute(
+            '''UPDATE users SET authToken = %s WHERE username = %s''', (authToken, username,))
+        self.connection.commit()
 
     def add_listing(self, name, username, item_name, item_type, description, price, location, image, soldStatus, soldTo):
         self.cur.execute(

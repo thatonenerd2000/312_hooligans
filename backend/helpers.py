@@ -1,3 +1,5 @@
+import random
+import string
 def escape_sql(sql_string):
     sql_string = sql_string.replace("'", "''")
     sql_string = sql_string.replace(";", " ")
@@ -12,3 +14,7 @@ def escape_html(text):
     text = text.replace('"', '&quot;')
     text = text.replace("'", '&#39;')
     return text
+
+def generate_token():
+    token = ''.join(random.choices(string.ascii_letters + string.digits, k=200))
+    return token
