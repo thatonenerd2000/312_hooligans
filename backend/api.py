@@ -79,11 +79,14 @@ def verifyUser(userInformation: dict):
 
 @app.get("/verifyAuth")
 async def verifyAuth(authToken: Union[str, None] = Cookie(default=None)):
-    db = dbmethods()
-    user = db.verifyAuth(hashlib.sha256(authToken.encode("utf-8")).hexdigest())
-    db.closeConnection()
-    if len(user) == 1:
-        return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+    if authToken != None:
+        db = dbmethods()
+        user = db.verifyAuth(hashlib.sha256(authToken.encode("utf-8")).hexdigest())
+        db.closeConnection()
+        if len(user) == 1:
+            return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+        else:
+            return {"message": "User verification failed"}
     else:
         return {"message": "User verification failed"}
 
