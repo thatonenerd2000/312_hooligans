@@ -202,6 +202,40 @@ html, h1, h2, h3, h4, h5, h6 {
     }
 }
 
+
+.add_listing input{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    width: 200px;
+}
+
+.add_listing select{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    width: 220px;
+}
+
+#add_listing_sale_button{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    background-color: rgb(136, 183, 25);
+    color: white;
+    font-weight: bold;
+    width: stretch;
+    &:hover{
+        cursor: pointer;
+    }
+}
+
 // Views
 
 //Landing
@@ -240,14 +274,15 @@ html, h1, h2, h3, h4, h5, h6 {
 .add_listing{
     width: 100vw;
     height: 100vh;
-    background-color: rgb(165, 191, 214);
+    background-color: #0C2D48;
 }
 
 .add_listing_box{
-    height:40vh;;
-    width: 40vw;
-    background-color: white;
+    height: fit-content;
+    width: 350px;
     padding: 20px;
+    background-color: rgb(245, 240, 240);
+    text-align: center;
 }
 
 #add_listing_image{

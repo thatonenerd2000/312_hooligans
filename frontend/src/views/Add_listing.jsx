@@ -3,6 +3,7 @@ import axios from "axios";
 
 //Components
 import NewItem from "../components/NewItem.jsx";
+import Menu from "../components/Menu.jsx";
 
 //Context
 import { ConfigContext } from "../GlobalContext";
@@ -26,9 +27,12 @@ const Add_listing = () => {
   }, [Globalconfig.username, Globalconfig.name, Globalconfig.email]);
 
   return (
-    <div className="add_listing">
-      <NewItem />
-    </div>
+    <>
+      <Menu />
+      <div className="add_listing">
+        <NewItem />
+      </div>
+    </>
   );
 };
 

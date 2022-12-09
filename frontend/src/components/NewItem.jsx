@@ -7,12 +7,8 @@ import { ConfigContext } from "../GlobalContext";
 //images
 import addImage from "../assets/images/add.png";
 
-//Router
-import { useNavigate } from "react-router-dom";
-
 const NewItem = () => {
   const Globalconfig = useContext(ConfigContext);
-  let navigate = useNavigate();
 
   const add_listing = (username, name, itemName, description, itemType, price, location, image) => {
     axios.post(`${Globalconfig.host}/addListing`, {
@@ -50,6 +46,7 @@ const NewItem = () => {
           }}
           id="add_listing_image"
         />
+        <br />
         <input
           type="file"
           id="add_listing_image_input"
@@ -72,6 +69,7 @@ const NewItem = () => {
             setItemName(e.target.value);
           }}
         />
+        <br />
         <input
           type="text"
           placeholder="Description"
@@ -80,19 +78,21 @@ const NewItem = () => {
             setItemDescription(e.target.value);
           }}
         />
+        <br />
         <select
           id="add_listing_category"
           onChange={(e) => {
             setItemType(e.target.value);
           }}
         >
-          <option value="Other">Select a category</option>
+          <option value="Other">Item Type</option>
           <option value="Electronics">Electronics</option>
           <option value="Clothing">Clothing</option>
           <option value="Furniture">Furniture</option>
           <option value="Books">Books</option>
           <option value="Other">Other</option>
         </select>
+        <br />
         <input
           type="text"
           placeholder="Price"
@@ -101,6 +101,7 @@ const NewItem = () => {
             setItemPrice(e.target.value);
           }}
         />
+        <br />
         <input
           type="text"
           placeholder="Location"
@@ -109,7 +110,9 @@ const NewItem = () => {
             setItemLocation(e.target.value);
           }}
         />
+        <br />
         <button
+          id="add_listing_sale_button"
           onClick={() => {
             if (
               ItemName !== "" &&
@@ -140,13 +143,6 @@ const NewItem = () => {
           }}
         >
           SALE!
-        </button>
-        <button
-          onClick={() => {
-            navigate("/listings");
-          }}
-        >
-          Back to listings
         </button>
       </div>
     </div>
