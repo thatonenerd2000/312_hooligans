@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Cookie
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Cookie, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import bcrypt
@@ -42,11 +42,13 @@ def createUser(userInformation: dict):
     hashedPassword = bcrypt.hashpw(utf, salt)
     authToken = helpers.generate_token()
     db = dbmethods()
-    db.create_user(name, email, username, hashedPassword.decode(), hashlib.sha256(authToken.encode("utf-8")).hexdigest())
+    db.create_user(name, email, username, hashedPassword.decode(),
+                   hashlib.sha256(authToken.encode("utf-8")).hexdigest())
     db.closeConnection()
     content = {"message": "User created successfully"}
     response = JSONResponse(content=content)
-    response.set_cookie(key="authToken", value=authToken, httponly=True,max_age=3600)
+    response.set_cookie(key="authToken", value=authToken,
+                        httponly=True, max_age=3600)
     return response
 
 
@@ -57,14 +59,18 @@ def verifyUser(userInformation: dict):
     db = dbmethods()
     user = db.verifyLogin(email)
     hashedPassword = user[0][4]
-    check = bcrypt.checkpw(plainTextPassword.encode('utf-8'), hashedPassword.encode('utf-8'))
+    check = bcrypt.checkpw(plainTextPassword.encode(
+        'utf-8'), hashedPassword.encode('utf-8'))
     if check:
         authToken = helpers.generate_token()
-        db.update_authToken(user[0][3],hashlib.sha256(authToken.encode("utf-8")).hexdigest())
+        db.update_authToken(user[0][3], hashlib.sha256(
+            authToken.encode("utf-8")).hexdigest())
         db.closeConnection()
-        content = {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
+        content = {"message": "User verified successfully",
+                   "name": user[0][1], "username": user[0][3], "email": user[0][2]}
         response = JSONResponse(content=content)
-        response.set_cookie(key="authToken", value=authToken, httponly=True, max_age=3600)
+        response.set_cookie(key="authToken", value=authToken,
+                            httponly=True, max_age=3600)
         return response
     else:
         db.closeConnection()

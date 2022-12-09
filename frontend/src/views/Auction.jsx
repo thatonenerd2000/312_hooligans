@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
 
 //Context
 import { ConfigContext } from "../GlobalContext";
@@ -9,7 +10,18 @@ const Auction = () => {
   const [chatHistory, setChatHistory] = useState([]);
   const [ws, setWs] = useState();
 
+  const verifyToken = () => {
+    axios.get(`${Globalconfig.host}/verifyAuth`, { withCredentials: true }).then((res) => {
+      if (res.data.message === "User verified successfully") {
+        Globalconfig.setName(res.data.name);
+        Globalconfig.setUsername(res.data.username);
+        Globalconfig.setUserEmail(res.data.email);
+      }
+    });
+  };
+
   useEffect(() => {
+    verifyToken();
     const url = `ws://localhost:${Globalconfig.port}/ws`;
     const ws = new WebSocket(url);
     setWs(ws);
