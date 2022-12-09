@@ -12,7 +12,19 @@ import datetime
 
 
 origins = [
-    "*"
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:8080",
+    "http://localhost:3001",
+    "http://frontend:3000",
+    "http://frontend:3001",
+    "http://backend:8000",
+    "http://backend:8080",
+    "http://67.205.141.11:3001/",
+    "http://67.205.141.11:3000/",
+    "http://67.205.141.11:8000/",
+    "http://67.205.141.11:8080/",
 ]
 
 app = FastAPI()
