@@ -8,7 +8,7 @@ const GlobalContext = (props) => {
   const [userEmail, setUserEmail] = React.useState("");
   const [name, setName] = React.useState("");
   //Chane it to 8000 for dev and 8080 for prod
-  const [port, setPort] = React.useState("8000");
+  const [port, setPort] = React.useState("8080");
   const [host, setHost] = React.useState(`http://localhost:${port}`);
   const [token, setToken] = React.useState("");
   return (
