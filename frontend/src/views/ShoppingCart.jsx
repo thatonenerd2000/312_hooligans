@@ -4,16 +4,12 @@ import axios from "axios";
 //Context
 import { ConfigContext } from "../GlobalContext";
 
-//Router
-import { useNavigate } from "react-router-dom";
-
 //Components
 import ListingsComponenet from "../components/ListingsComponenet";
 import Menu from "../components/Menu.jsx";
 
 const ShoppingCart = () => {
   const Globalconfig = useContext(ConfigContext);
-  let navigate = useNavigate();
 
   const [cartItems, getCartItems] = React.useState([]);
 
@@ -89,14 +85,9 @@ const ShoppingCart = () => {
           </ListingsComponenet>
         );
       })}
+      <br />
       <button
-        onClick={(e) => {
-          navigate("/listings");
-        }}
-      >
-        Back to Listings
-      </button>
-      <button
+        id="checkout_button"
         onClick={(e) => {
           checkoutAll(Globalconfig.username);
         }}
