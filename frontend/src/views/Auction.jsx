@@ -22,6 +22,7 @@ const Auction = () => {
   const [ws, setWs] = useState();
   const [NewTime, setNewTime] = useState("");
   const [timeLeftDiff, setTimeLeft] = useState("");
+  const [expiryTime, setExpiryTime] = useState("");
 
   const getItemFromAuction = () => {
     axios.post(`${Globalconfig.host}/getAuctionItem/${itemId}`).then((res) => {
@@ -44,6 +45,7 @@ const Auction = () => {
       setHighestBid(res.data[2]);
       setHighestBidder(res.data[3]);
       setNewTime(res.data[4]);
+      setExpiryTime(res.data[4]);
     });
   };
 
@@ -68,10 +70,19 @@ const Auction = () => {
     setTimeLeft(`${minutes}m`);
   };
 
+  const endAuction = (itemId) => {
+    axios.post(`${Globalconfig.host}/endAuction/${itemId}`);
+  };
+
   useEffect(() => {
     verifyToken();
     getBidInfo(itemId);
     timeLeft(NewTime);
+    console.log(timeLeftDiff);
+    if (timeLeftDiff === "0m") {
+      endAuction(itemId);
+    }
+
     const url = `ws://localhost:${Globalconfig.port}/ws/auction/${itemId}`;
     getItemFromAuction();
     const ws = new WebSocket(url);
@@ -90,7 +101,7 @@ const Auction = () => {
       }
     };
     // eslint-disable-next-line
-  }, [chatHistory, highestBid, Globalconfig.username, Globalconfig.name, Globalconfig.email, NewTime]);
+  }, [chatHistory, highestBid, Globalconfig.username, Globalconfig.name, Globalconfig.email, NewTime, timeLeftDiff]);
 
   return (
     <>
@@ -110,6 +121,8 @@ const Auction = () => {
                 message: e,
                 listingId: item[0],
                 username: Globalconfig.username,
+                timeNow: new Date(),
+                timeExpire: expiryTime,
               };
               ws.send(JSON.stringify(data));
             }}
@@ -119,6 +132,8 @@ const Auction = () => {
                 message: e,
                 listingId: item[0],
                 username: Globalconfig.username,
+                timeNow: new Date(),
+                timeExpire: expiryTime,
               };
               ws.send(JSON.stringify(data));
               updateBidInfo(itemId, e, Globalconfig.username);

@@ -19,10 +19,17 @@ const UserProfile = () => {
   const navigate = useNavigate();
 
   const [listings, getListings] = React.useState([""]);
+  const [bought, setBought] = React.useState([]);
 
   const getListingsAxios = () => {
     axios.get(`${Globalconfig.host}/getListings/${Globalconfig.username}`).then((res) => {
       getListings(res.data);
+    });
+  };
+
+  const getListingsBought = () => {
+    axios.get(`${Globalconfig.host}/getListingsBought/${Globalconfig.username}`).then((res) => {
+      setBought(res.data);
     });
   };
 
@@ -52,6 +59,7 @@ const UserProfile = () => {
   useEffect(() => {
     verifyToken();
     getListingsAxios();
+    getListingsBought();
     // eslint-disable-next-line
   }, [Globalconfig.auctionLists, Globalconfig.username, Globalconfig.name, Globalconfig.email]);
 
@@ -95,6 +103,12 @@ const UserProfile = () => {
                   )}
                 </ListingsComponenet>
               );
+            })}
+            <br />
+            <h1 className="headers">Your purchases</h1>
+            <hr />
+            {bought.map((listing) => {
+              return <ListingsComponenet key={listing[0]} listing={listing} price="" />;
             })}
           </div>
         ) : (
