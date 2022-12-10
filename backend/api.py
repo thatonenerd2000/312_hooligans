@@ -151,7 +151,7 @@ def addToCart(cartInformation: dict):
     buyer = cartInformation["buyerUsername"]
     itemId = cartInformation["itemId"]
     db = dbmethods()
-    db.add_to_cart(helpers.escape_sql(buyer), helpers.escape_sql(itemId))
+    db.add_to_cart(helpers.escape_sql(buyer), itemId)
     db.closeConnection()
     return {"message": buyer + " bought a thing!"}
 
@@ -177,7 +177,7 @@ def buyNow(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
-    db.checkout_singlex_item(helpers.escape_sql(username), helpers.escape_sql(itemId))
+    db.checkout_singlex_item(helpers.escape_sql(username), itemId)
     db.closeConnection()
 
 
@@ -186,7 +186,7 @@ def removeOne(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
-    db.remove_item_from_cart(helpers.escape_sql(username), helpers.escape_sql(itemId))
+    db.remove_item_from_cart(helpers.escape_sql(username), itemId)
     db.closeConnection()
 
 
@@ -194,7 +194,7 @@ def removeOne(checkoutInformation: dict):
 def getListing(itemId: str):
     if itemId != "undefined":
         db = dbmethods()
-        item = db.get_item_from_id(helpers.escape_sql(itemId))
+        item = db.get_item_from_id(itemId)
         db.closeConnection()
         return item
 
@@ -207,14 +207,14 @@ def createAuction(itemId: str, auctionInformation: dict):
     startTime = datetime.datetime.now()
     auctionEndTime = startTime + datetime.timedelta(minutes=2)
     db = dbmethods()
-    db.addAuction(helpers.escape_sql(itemId), highestBid, helpers.escape_sql(highestBidder), auctionEndTime)
+    db.addAuction(itemId, highestBid, helpers.escape_sql(highestBidder), auctionEndTime)
     db.closeConnection()
 
 
 @app.post("/getAuctionItem/{itemId}")
 def getAuctionItem(itemId: str):
     db = dbmethods()
-    item = db.get_item_from_id(helpers.escape_sql(itemId))
+    item = db.get_item_from_id(itemId)
     auction = db.getAuction()
     expiryTime = ''
     for every in auction:
@@ -231,7 +231,7 @@ def getAuction():
     items = []
     for every in auction:
         itemId = every[1]
-        items += [db.get_item_from_id(helpers.escape_sql(itemId))]
+        items += [db.get_item_from_id(itemId)]
     db.closeConnection()
     return items
 
@@ -239,7 +239,7 @@ def getAuction():
 @app.get("/getAuctionItem/{itemId}")
 def getAuctionItem(itemId: str):
     db = dbmethods()
-    item = db.getAuctionInfo(helpers.escape_sql(itemId))
+    item = db.getAuctionInfo(itemId)
     db.closeConnection()
     return item
 
@@ -247,19 +247,19 @@ def getAuctionItem(itemId: str):
 @app.post("/updateAuction/{itemId}")
 def updateAuction(itemId: str, auctionInformation: dict):
     db = dbmethods()
-    itemPrevState = db.getAuctionInfo(helpers.escape_sql(itemId))
+    itemPrevState = db.getAuctionInfo(itemId)
     previousHighestBid = itemPrevState[2]
     newHighestBid = auctionInformation["currentBid"]
     newHighestBidder = auctionInformation["currentBidder"]
     if newHighestBid > previousHighestBid:
-        db.updateAuction(helpers.escape_sql(itemId), helpers.escape_sql(newHighestBid), helpers.escape_sql(newHighestBidder))
+        db.updateAuction(itemId, helpers.escape_sql(newHighestBid), helpers.escape_sql(newHighestBidder))
     db.closeConnection()
 
 
 @app.post("/takeOffAuction/{itemId}")
 def endAuction(itemId: str, auctionInformation: dict):
     db = dbmethods()
-    db.endAuction(helpers.escape_sql(itemId))
+    db.endAuction(itemId)
     db.closeConnection()
 
 
