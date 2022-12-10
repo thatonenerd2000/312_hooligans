@@ -207,7 +207,7 @@ def createAuction(itemId: str, auctionInformation: dict):
     startTime = datetime.datetime.now()
     auctionEndTime = startTime + datetime.timedelta(minutes=2)
     db = dbmethods()
-    db.addAuction(helpers.escape_sql(itemId), helpers.escape_sql(highestBid), helpers.escape_sql(highestBidder), helpers.escape_sql(auctionEndTime))
+    db.addAuction(helpers.escape_sql(itemId), highestBid, helpers.escape_sql(highestBidder), auctionEndTime)
     db.closeConnection()
 
 
