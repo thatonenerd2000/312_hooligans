@@ -51,6 +51,7 @@ def createUser(userInformation: dict):
 
 
 @app.post("/verifyUser")
+@app.middleware("http")
 def verifyUser(userInformation: dict):
     email = userInformation['email']
     plainTextPassword = userInformation['password']
