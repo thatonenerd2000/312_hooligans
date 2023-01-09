@@ -22,6 +22,7 @@ origins = [
     "http://backend:8000",
     "http://backend:8080",
     "http://206.81.9.249/",
+    "http://206.81.9.249/*",
 
 ]
 
