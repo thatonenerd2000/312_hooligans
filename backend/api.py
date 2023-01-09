@@ -51,6 +51,7 @@ def createUser(userInformation: dict):
 
 
 @app.post("/verifyUser")
+@app.middleware("http")
 def verifyUser(userInformation: dict):
     email = userInformation['email']
     plainTextPassword = userInformation['password']
@@ -69,6 +70,7 @@ def verifyUser(userInformation: dict):
         response = JSONResponse(content=content)
         response.set_cookie(key="authToken", value=authToken,
                             httponly=True, max_age=3600)
+        response.headers["Access-Control-Allow-Origin"] = "*"
         db.closeConnection()
         return response
     else:
@@ -84,6 +86,7 @@ async def verifyAuth(authToken: Union[str, None] = Cookie(default=None)):
         user = db.verifyAuth(hashlib.sha256(
             authToken.encode("utf-8")).hexdigest())
         db.closeConnection()
+        # Create a response
         if len(user) == 1:
             return {"message": "User verified successfully", "name": user[0][1], "username": user[0][3], "email": user[0][2]}
         else:
