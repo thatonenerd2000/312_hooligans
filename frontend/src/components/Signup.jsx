@@ -18,8 +18,7 @@ const Signup = (props) => {
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Credentials": true,
-            "Access-Control-Allow-Origin":
-              "http://localhost, http://localhost:3000, http://localhost:8000 , http://localhost:8080 , http://localhost:3001 , http://frontend:3000, http://frontend:3001, http://backend:8000, http://backend:8080, http://206.81.9.249/, 206.81.9.249, ws://206.81.9.249:*",
+            "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
           },
           name: name,
