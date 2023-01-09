@@ -106,8 +106,8 @@ class dbmethods:
                 )
             )
             self.cur.execute(
-                """DELETE FROM cart WHERE item = %s AND username != %s""", (
-                    i[2], i[1])
+                """DELETE FROM cart WHERE item = %s""", (
+                    i[2])
             )
         self.connection.commit()
 
@@ -126,15 +126,15 @@ class dbmethods:
                     username, item, False)
             )
         self.cur.execute(
-            """UPDATE listings SET soldStatus = True WHERE id = '%s'""", (item))
+            """UPDATE listings SET soldStatus = True WHERE id = %s""", (item))
         self.cur.execute(
             """UPDATE cart SET bought = True WHERE username = '%s' AND item = '%s'""" % (username, item))
         self.cur.execute(
-            """UPDATE listings SET soldTo = '%s' WHERE id = '%s'""", (
+            """UPDATE listings SET soldTo = %s WHERE id = %s""", (
                 username, item)
         )
         self.cur.execute(
-            """DELETE FROM cart WHERE item = '%s' AND username != '%s'""", (item, username))
+            """DELETE FROM cart WHERE item = %s AND username != %s""", (item, username))
         self.connection.commit()
 
     def remove_item_from_cart(self, username, item):
@@ -156,6 +156,12 @@ class dbmethods:
             """INSERT INTO auctions (itemID, highestBid, highestBidder, auctionEnd) VALUES (%s, %s, %s, %s)""", (
                 itemID, highestBid, highestBidder, auctionEnd))
         self.connection.commit()
+
+    def get_listings_bought(self, username):
+        self.cur.execute(
+            '''SELECT * FROM listings WHERE soldto = %s''', (username,))
+        listings = self.cur.fetchall()
+        return listings
 
     def getAuction(self):
         self.cur.execute(

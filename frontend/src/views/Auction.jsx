@@ -25,7 +25,7 @@ const Auction = () => {
   const [expiryTime, setExpiryTime] = useState("");
 
   const getItemFromAuction = () => {
-    axios.post(`${Globalconfig.host}/getAuctionItem/${itemId}`).then((res) => {
+    axios.post(`${Globalconfig.host}/getAuctionItem/${itemId}`, { withCredentials: true }).then((res) => {
       setItem(res.data.item);
     });
   };

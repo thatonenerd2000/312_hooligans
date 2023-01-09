@@ -93,6 +93,7 @@ const Listing = () => {
                       <button
                         onClick={(e) => {
                           buyNow(listing[0], Globalconfig.username);
+                          window.location.reload();
                         }}
                       >
                         Buy Now!

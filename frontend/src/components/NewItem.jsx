@@ -13,21 +13,25 @@ const NewItem = () => {
   const [imgSrc, setImgSrc] = React.useState(addImage);
 
   const add_listing = (username, name, itemName, description, itemType, price, location, image) => {
-    axios.post(`${Globalconfig.host}/addListing`, {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    axios.post(
+      `${Globalconfig.host}/addListing`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+        },
+        username: username,
+        name: name,
+        itemName: itemName,
+        description: description,
+        itemType: itemType,
+        price: price,
+        location: location,
+        image: image,
       },
-      username: username,
-      name: name,
-      itemName: itemName,
-      description: description,
-      itemType: itemType,
-      price: price,
-      location: location,
-      image: image,
-    });
+      { withCredentials: true }
+    );
   };
 
   const [image, setImageBinary] = React.useState();

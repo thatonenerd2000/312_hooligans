@@ -172,12 +172,20 @@ def checkoutCart(username: dict):
     db.closeConnection()
 
 
+@app.get("/getListingsBought/{username}")
+def getListingsBought(username: str):
+    db = dbmethods()
+    listings = db.get_listings_bought(username)
+    db.closeConnection()
+    return listings
+
+
 @app.post("/buyNow")
 def buyNow(checkoutInformation: dict):
     username = checkoutInformation['buyerUsername']
     itemId = checkoutInformation['itemId']
     db = dbmethods()
-    db.checkout_singlex_item(helpers.escape_sql(username), itemId)
+    db.checkout_single_item(helpers.escape_sql(username), itemId)
     db.closeConnection()
 
 
@@ -205,9 +213,10 @@ def createAuction(itemId: str, auctionInformation: dict):
     highestBid = auctionInformation["highestBid"]
     highestBidder = auctionInformation["highestBidder"]
     startTime = datetime.datetime.now()
-    auctionEndTime = startTime + datetime.timedelta(minutes=2)
+    auctionEndTime = startTime + datetime.timedelta(minutes=120)
     db = dbmethods()
-    db.addAuction(itemId, highestBid, helpers.escape_sql(highestBidder), auctionEndTime)
+    db.addAuction(itemId, highestBid, helpers.escape_sql(
+        highestBidder), auctionEndTime)
     db.closeConnection()
 
 
@@ -252,7 +261,8 @@ def updateAuction(itemId: str, auctionInformation: dict):
     newHighestBid = auctionInformation["currentBid"]
     newHighestBidder = auctionInformation["currentBidder"]
     if newHighestBid > previousHighestBid:
-        db.updateAuction(itemId, helpers.escape_sql(newHighestBid), helpers.escape_sql(newHighestBidder))
+        db.updateAuction(itemId, helpers.escape_sql(
+            newHighestBid), helpers.escape_sql(newHighestBidder))
     db.closeConnection()
 
 
@@ -295,6 +305,7 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
+
 
 @app.websocket("/ws/auction/{auctionID}")
 async def websocket_endpoint(websocket: WebSocket, auctionID: str):

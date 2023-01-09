@@ -48,6 +48,8 @@ const ShoppingCart = () => {
       itemId: itemId,
       buyerUsername: buyerUsername,
     });
+    //reload the page
+    window.location.reload();
   };
   const checkoutAll = () => {
     axios.post(`${Globalconfig.host}/checkoutCart`, {
@@ -58,6 +60,7 @@ const ShoppingCart = () => {
       },
       username: Globalconfig.username,
     });
+    window.location.reload();
   };
 
   useEffect(() => {

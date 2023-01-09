@@ -60,6 +60,7 @@ const UserProfile = () => {
     verifyToken();
     getListingsAxios();
     getListingsBought();
+    console.log(bought);
     // eslint-disable-next-line
   }, [Globalconfig.auctionLists, Globalconfig.username, Globalconfig.name, Globalconfig.email]);
 
