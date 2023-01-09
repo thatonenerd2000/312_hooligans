@@ -8,6 +8,10 @@ import { useNavigate } from "react-router-dom";
 import { ConfigContext } from "../GlobalContext";
 
 const Login = (props) => {
+  axios.defaults.headers.common["Content-Type"] = "application/json";
+  axios.defaults.headers.common["Access-Control-Allow-Credentials"] = true;
+  axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.headers.common["Access-Control-Allow-Methods"] = "GET,PUT,POST,DELETE,PATCH,OPTIONS";
   const Globalconfig = useContext(ConfigContext);
   let navigate = useNavigate();
 
@@ -17,12 +21,6 @@ const Login = (props) => {
       .post(
         `${Globalconfig.host}/verifyUser`,
         {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-          },
           email: username,
           password: password,
         },

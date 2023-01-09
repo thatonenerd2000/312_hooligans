@@ -13,6 +13,10 @@ import { useNavigate } from "react-router-dom";
 import { ConfigContext } from "../GlobalContext";
 
 const Landing = () => {
+  axios.defaults.headers.common["Content-Type"] = "application/json";
+  axios.defaults.headers.common["Access-Control-Allow-Credentials"] = true;
+  axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.headers.common["Access-Control-Allow-Methods"] = "GET,PUT,POST,DELETE,PATCH,OPTIONS";
   let navigate = useNavigate();
   const [logDisplay, setLogDisplay] = useState(true);
   const Globalconfig = useContext(ConfigContext);

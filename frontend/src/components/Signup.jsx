@@ -7,6 +7,10 @@ import { useNavigate } from "react-router-dom";
 import { ConfigContext } from "../GlobalContext";
 
 const Signup = (props) => {
+  axios.defaults.headers.common["Content-Type"] = "application/json";
+  axios.defaults.headers.common["Access-Control-Allow-Credentials"] = true;
+  axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+  axios.defaults.headers.common["Access-Control-Allow-Methods"] = "GET,PUT,POST,DELETE,PATCH,OPTIONS";
   const Globalconfig = useContext(ConfigContext);
   let navigate = useNavigate();
 
