@@ -18,10 +18,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    # allow_credentials=True,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-
 )
 
 global authToken
@@ -29,6 +28,7 @@ authToken = ""
 
 
 @app.post("/createUser")
+@app.middleware("http")
 def createUser(userInformation: dict):
     name = userInformation["name"]
     email = userInformation["email"]
@@ -47,6 +47,7 @@ def createUser(userInformation: dict):
     response = JSONResponse(content=content)
     response.set_cookie(key="authToken", value=authToken,
                         httponly=True, max_age=3600)
+    response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
 
