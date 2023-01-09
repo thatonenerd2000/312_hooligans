@@ -15,12 +15,6 @@ const Signup = (props) => {
       .post(
         `${Globalconfig.host}/createUser`,
         {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Credentials": true,
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-          },
           name: name,
           email: email,
           password: password,

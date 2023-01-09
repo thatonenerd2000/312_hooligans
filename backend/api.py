@@ -12,18 +12,17 @@ import datetime
 
 
 origins = [
-    # "http://localhost",
-    # "http://localhost:3000",
-    # "http://localhost:8000",
-    # "http://localhost:8080",
-    # "http://localhost:3001",
-    # "http://frontend:3000",
-    # "http://frontend:3001",
-    # "http://backend:8000",
-    # "http://backend:8080",
-    # "http://206.81.9.249/",
-    # "http://206.81.9.249/*",
-    '*'
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:8080",
+    "http://localhost:3001",
+    "http://frontend:3000",
+    "http://frontend:3001",
+    "http://backend:8000",
+    "http://backend:8080",
+    "http://206.81.9.249/",
+    "http://206.81.9.249/*",
 
 ]
 

@@ -16,11 +16,6 @@ const NewItem = () => {
     axios.post(
       `${Globalconfig.host}/addListing`,
       {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-        },
         username: username,
         name: name,
         itemName: itemName,
