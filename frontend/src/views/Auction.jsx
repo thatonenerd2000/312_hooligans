@@ -25,24 +25,32 @@ const Auction = () => {
   const [expiryTime, setExpiryTime] = useState("");
 
   const getItemFromAuction = () => {
-    axios.post(`${Globalconfig.host}/getAuctionItem/${itemId}`, { withCredentials: true }).then((res) => {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin":"*",
-        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-      },
+    axios.post(`${Globalconfig.host}/getAuctionItem/${itemId}`).then((res) => {
       setItem(res.data.item);
     });
   };
 
   const verifyToken = () => {
-    axios.get(`${Globalconfig.host}/verifyAuth`, { withCredentials: true }).then((res) => {
-      if (res.data.message === "User verified successfully") {
-        Globalconfig.setName(res.data.name);
-        Globalconfig.setUsername(res.data.username);
-        Globalconfig.setUserEmail(res.data.email);
-      }
-    });
+    axios
+      .get(
+        `${Globalconfig.host}/verifyAuth`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": true,
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+          },
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        if (res.data.message === "User verified successfully") {
+          Globalconfig.setName(res.data.name);
+          Globalconfig.setUsername(res.data.username);
+          Globalconfig.setUserEmail(res.data.email);
+        }
+      });
   };
 
   const getBidInfo = (itemId) => {
