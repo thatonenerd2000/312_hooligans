@@ -6,6 +6,10 @@ services:
     ports:
       - '80:80'
       - '443:443'
+  frontend:
+    build: ./frontend
+    ports:
+      - "3001:3000"
   postgres:
     image: postgres:13.2
     environment:
@@ -18,7 +22,3 @@ services:
       WAIT_HOSTS: postgres:5432
     ports:
       - "8080:8000"
-  frontend:
-    build: ./frontend
-    ports:
-      - "3001:3000"
