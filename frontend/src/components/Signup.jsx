@@ -11,6 +11,7 @@ const Signup = (props) => {
   axios.defaults.headers.common["Access-Control-Allow-Credentials"] = true;
   axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
   axios.defaults.headers.common["Access-Control-Allow-Methods"] = "GET,PUT,POST,DELETE,PATCH,OPTIONS";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
   const Globalconfig = useContext(ConfigContext);
   let navigate = useNavigate();
 

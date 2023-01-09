@@ -17,6 +17,7 @@ const Landing = () => {
   axios.defaults.headers.common["Access-Control-Allow-Credentials"] = true;
   axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
   axios.defaults.headers.common["Access-Control-Allow-Methods"] = "GET,PUT,POST,DELETE,PATCH,OPTIONS";
+  axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
   let navigate = useNavigate();
   const [logDisplay, setLogDisplay] = useState(true);
   const Globalconfig = useContext(ConfigContext);
