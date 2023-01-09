@@ -51,7 +51,6 @@ def createUser(userInformation: dict):
 
 
 @app.post("/verifyUser")
-@app.middleware("http")
 def verifyUser(userInformation: dict):
     email = userInformation['email']
     plainTextPassword = userInformation['password']
@@ -78,6 +77,7 @@ def verifyUser(userInformation: dict):
 
 
 @app.get("/verifyAuth")
+@app.middleware("http")
 async def verifyAuth(authToken: Union[str, None] = Cookie(default=None)):
     if authToken != None:
         db = dbmethods()
