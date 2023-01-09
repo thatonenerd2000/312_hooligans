@@ -26,6 +26,11 @@ const Auction = () => {
 
   const getItemFromAuction = () => {
     axios.post(`${Globalconfig.host}/getAuctionItem/${itemId}`, { withCredentials: true }).then((res) => {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin":"*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      },
       setItem(res.data.item);
     });
   };
